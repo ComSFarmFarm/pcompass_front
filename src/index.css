@@ -34,6 +34,7 @@ body, html {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    text-align: center;
 }
 
 .inputTitle {
@@ -76,10 +77,11 @@ body, html {
     margin-top: 8px;
     color: #ef0000;
     font-size: 12px;
+    text-align: center; /* 오류 메시지를 중앙 정렬합니다 */
 }
 
 .bottomButton {
-    width: 100%;
+    width: 200px; /* 버튼의 너비를 줄였습니다 */
     height: 48px;
     border: none;
     font-weight: 700;
@@ -88,7 +90,8 @@ body, html {
     color: white;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-top: 20px;
+    margin: 20px auto; /* 버튼을 수평 중앙에 배치합니다 */
+    display: block; /* 버튼을 블록 레벨 요소로 설정 */
 }
 
 .bottomButton:disabled {
