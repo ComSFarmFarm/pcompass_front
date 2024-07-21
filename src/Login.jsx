@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 const User = {
-    email: 'test@example.com',
-    pw: 'test2323@@@'
+    email: 'comsfarmfarm',
+    pw: 'comsfarm2024!'
 };
 
 export default function Login() {
@@ -16,9 +16,8 @@ export default function Login() {
     const handleEmail = (e) => {
         const value = e.target.value;
         setEmail(value);
-        const regex = 
-            /^(([^<>().,;:\s@"]+(\.[^<>().,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
-        setEmailValid(regex.test(value));
+        // 이메일 형식 검증을 단순화하여, 비어 있지 않으면 유효하다고 간주
+        setEmailValid(value.trim().length > 0);
     };
 
     const handlePassword = (e) => {
