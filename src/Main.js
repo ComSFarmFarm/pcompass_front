@@ -1,6 +1,7 @@
-import styled from 'styled-components';
 import React from 'react';
+import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { ReactComponent as RainbowSVG } from './img/rainbow.svg'; // Correct path
 
 // Styled components for the Main Page
 
@@ -15,6 +16,7 @@ const Page = styled.div`
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
+    padding-bottom: 710px; /* Adjust this value as needed */
 `;
 
 const Header = styled.h1`
@@ -22,7 +24,8 @@ const Header = styled.h1`
     font-weight: 700;
     color: #262626;
     text-align: center;
-    margin-bottom: 20px;
+    margin-top: 20px; /* Adjust margin-top as needed */
+    margin-bottom: 10px;
 `;
 
 const Content = styled.div`
@@ -31,6 +34,7 @@ const Content = styled.div`
     text-align: center;
     max-width: 600px;
     margin-bottom: 40px;
+    margin-top: 10px;
 `;
 
 const LogoutButton = styled.button`
@@ -52,31 +56,29 @@ const LogoutButton = styled.button`
     }
 `;
 
-// React component for the Main Page
+const StyledRainbowSVG = styled(RainbowSVG)`
+    margin-top: 300px; /* Adjust this value to move the SVG down */
+`;
 
-export default function Main() {
+// Main component
+const Main = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        // Here you can include logic to clear user data or tokens
-        navigate('/'); // Redirect to the sign-in page (assuming '/' is the sign-in route)
+        // Handle logout functionality
+        navigate('/signin'); // Redirect to login page or wherever necessary
     };
 
     return (
         <Page>
-            <Header>Welcome to the Main Page!</Header>
+            <StyledRainbowSVG width={148} height={107} />
+            <Header>Welcome to the Main Page</Header>
             <Content>
-                <p>
-                    You have successfully logged in. This is the main page where you can find
-                    various features and content relevant to your account.
-                </p>
-                <p>
-                    Feel free to explore and enjoy our services.
-                </p>
+                This is the content area. You can add more information or components here.
             </Content>
-            <LogoutButton onClick={handleLogout}>
-                Logout
-            </LogoutButton>
+            <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
         </Page>
     );
-}
+};
+
+export default Main;
