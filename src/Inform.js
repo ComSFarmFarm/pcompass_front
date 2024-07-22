@@ -77,6 +77,15 @@ const Input = styled.input`
     }
 `;
 
+const Select = styled.select`
+    width: 100%;
+    outline: none;
+    border: none;
+    height: 20px;
+    font-size: 14px;
+    font-weight: 400;
+`;
+
 const ErrorMessageWrap = styled.div`
     margin-top: 0px;
     margin-bottom: 10px;
@@ -111,117 +120,104 @@ const BottomButton = styled.button`
 `;
 
 // React component
-export default function Signup() {
-    const [email, setEmail] = useState('');
-    const [pw, setPw] = useState('');
-    const [confirmPw, setConfirmPw] = useState('');
+export default function Inform() {
+    const [name, setName] = useState('');
+    const [gender, setGender] = useState('');
+    const [dob, setDob] = useState('');
 
-    const [emailValid, setEmailValid] = useState(false);
-    const [pwValid, setPwValid] = useState(false);
-    const [pwMatch, setPwMatch] = useState(true);
+    const [nameValid, setNameValid] = useState(false);
+    const [dobValid, setDobValid] = useState(false);
     const [notAllow, setNotAllow] = useState(true);
 
     const navigate = useNavigate();
-    
-    const handleEmail = (e) => {
+
+    const handleName = (e) => {
         const value = e.target.value;
-        setEmail(value);
-        const idRegex = /^[a-zA-Z0-9]{4,20}$/;
-        setEmailValid(idRegex.test(value));
+        setName(value);
+        setNameValid(value.trim() !== '');
     };
 
-    const handlePassword = (e) => {
+    const handleGender = (e) => {
         const value = e.target.value;
-        setPw(value);
-        const regex = 
-            /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&()\-_=+])(?!.*[^a-zA-Z0-9$`~!@$!%*#^?&()\-_=+]).{8,20}$/;
-        setPwValid(regex.test(value));
+        setGender(value);
     };
 
-    const handleConfirmPassword = (e) => {
+    const handleDob = (e) => {
         const value = e.target.value;
-        setConfirmPw(value);
-        setPwMatch(value === pw);
+        setDob(value);
+        setDobValid(value.trim() !== '');
     };
 
-    const onClickSignupButton = () => {
-        if (emailValid && pwValid && pwMatch) {
-            alert('개인정보를 입력해주세요.');
-            navigate('/inform'); // Navigate to the information page
+    const onClickConfirmButton = () => {
+        if (nameValid && dobValid && gender) {
+            alert('정보 입력이 완료되었습니다.');
+            navigate('/'); // Redirect to the sign-in page or next step
         } else {
             alert('입력된 정보를 확인해주세요.');
         }
     };
 
     useEffect(() => {
-        if (emailValid && pwValid && pwMatch) {
+        if (nameValid && dobValid && gender) {
             setNotAllow(false);
         } else {
             setNotAllow(true);
         }
-    }, [emailValid, pwValid, pwMatch]);
+    }, [nameValid, dobValid, gender]);
 
     return (
         <Page>
             <TitleWrap>
-                회원가입 정보를
+                개인정보를
                 <br />
                 입력해주세요
             </TitleWrap>
 
             <ContentWrap>
-                <InputTitle>아이디</InputTitle>
+                <InputTitle>이름</InputTitle>
                 <InputWrap>
                     <Input 
                         type='text'
-                        placeholder="comsfarmfarm"
-                        value={email} 
-                        onChange={handleEmail}
+                        placeholder="홍길동"
+                        value={name}
+                        onChange={handleName}
                     />
                 </InputWrap>
                 <ErrorMessageWrap>
                     {
-                        !emailValid && email.length > 0 && (
-                            <div> 올바른 아이디를 입력해주세요 </div>
+                        !nameValid && name.length > 0 && (
+                            <div> 이름을 입력해주세요 </div>
                         )
                     }
                 </ErrorMessageWrap>
-                <InputTitle>비밀번호</InputTitle>
+                <InputTitle>성별</InputTitle>
+                <InputWrap>
+                    <Select value={gender} onChange={handleGender}>
+                        <option value="">성별 선택</option>
+                        <option value="male">남성</option>
+                        <option value="female">여성</option>
+                        <option value="other">기타</option>
+                    </Select>
+                </InputWrap>
+                <InputTitle>생년월일</InputTitle>
                 <InputWrap>
                     <Input 
-                        type='password'
-                        placeholder="영문, 숫자, 특수문자 포함 8자 이상"
-                        value={pw}
-                        onChange={handlePassword}
+                        type='date'
+                        value={dob}
+                        onChange={handleDob}
                     />
                 </InputWrap>
                 <ErrorMessageWrap>
                     {
-                        !pwValid && pw.length > 0 && (
-                            <div>영문, 숫자, 특수문자 포함 8자 이상 입력해주세요.</div>
-                        )
-                    }
-                </ErrorMessageWrap>
-                <InputTitle>비밀번호 확인</InputTitle>
-                <InputWrap>
-                    <Input 
-                        type='password'
-                        placeholder="비밀번호를 다시 입력해주세요"
-                        value={confirmPw}
-                        onChange={handleConfirmPassword}
-                    />
-                </InputWrap>
-                <ErrorMessageWrap>
-                    {
-                        !pwMatch && confirmPw.length > 0 && (
-                            <div>비밀번호가 일치하지 않습니다.</div>
+                        !dobValid && dob.length > 0 && (
+                            <div> 생년월일을 입력해주세요 </div>
                         )
                     }
                 </ErrorMessageWrap>
             </ContentWrap>
 
-            <BottomButton onClick={onClickSignupButton} disabled={notAllow}>
-                다음
+            <BottomButton onClick={onClickConfirmButton} disabled={notAllow}>
+                확인
             </BottomButton>
         </Page>
     );
