@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Styled components
-
 const Page = styled.div`
     width: 100%;
     height: 100%;
@@ -124,7 +123,6 @@ const SignupText = styled.div`
     }
 `;
 
-
 // React component
 const User = {
     email: 'comsfarmfarm',
@@ -158,7 +156,7 @@ export default function Signin() {
 
     const onClickConfirmButton = () => {
         if (email === User.email && pw === User.pw) {
-            alert('로그인에 성공했습니다.');
+            navigate('/main'); // Redirect to the Main page
         } else {
             alert('등록되지 않은 회원입니다');
         }
