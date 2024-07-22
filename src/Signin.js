@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Styled components
+
 const Page = styled.div`
     width: 100%;
     height: 100%;
@@ -95,7 +97,7 @@ const BottomButton = styled.button`
     color: white;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin: 200px auto;
+    margin: 50px auto 20px auto; /* 버튼의 아래쪽 마진을 조절 */
     display: block;
 
     &:disabled {
@@ -108,6 +110,20 @@ const BottomButton = styled.button`
         background-color: #5d1a90;
     }
 `;
+
+const SignupText = styled.div`
+    text-align: center;
+    font-size: 16px;
+    color: #000000;
+    cursor: pointer;
+    margin-top: 10px; /* 텍스트의 위쪽 마진을 조절 */
+    margin-bottom: 300px;
+
+    &:hover {
+        text-decoration: underline;
+    }
+`;
+
 
 // React component
 const User = {
@@ -122,6 +138,8 @@ export default function Signin() {
     const [emailValid, setEmailValid] = useState(false);
     const [pwValid, setPwValid] = useState(false);
     const [notAllow, setNotAllow] = useState(false);
+
+    const navigate = useNavigate();
 
     const handleEmail = (e) => {
         const value = e.target.value;
@@ -200,6 +218,11 @@ export default function Signin() {
             <BottomButton onClick={onClickConfirmButton} disabled={notAllow}>
                 확인
             </BottomButton>
+
+            <SignupText onClick={() => navigate('/signup')}>
+                회원가입
+            </SignupText>
+
         </Page>
     );
 }

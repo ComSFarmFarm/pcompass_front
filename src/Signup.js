@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 // Styled components
 const Page = styled.div`
@@ -95,7 +97,7 @@ const BottomButton = styled.button`
     color: white;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin: 200px auto;
+    margin: 140px auto;
     display: block;
 
     &:disabled {
@@ -110,19 +112,18 @@ const BottomButton = styled.button`
 `;
 
 // React component
-const User = {
-    email: 'comsfarmfarm',
-    pw: 'comsfarm2024!'
-};
-
-export default function Signin() {
+export default function Signup() {
     const [email, setEmail] = useState('');
     const [pw, setPw] = useState('');
+    const [confirmPw, setConfirmPw] = useState('');
 
     const [emailValid, setEmailValid] = useState(false);
     const [pwValid, setPwValid] = useState(false);
-    const [notAllow, setNotAllow] = useState(false);
+    const [pwMatch, setPwMatch] = useState(true);
+    const [notAllow, setNotAllow] = useState(true);
 
+    const navigate = useNavigate();
+    
     const handleEmail = (e) => {
         const value = e.target.value;
         setEmail(value);
@@ -138,26 +139,33 @@ export default function Signin() {
         setPwValid(regex.test(value));
     };
 
-    const onClickConfirmButton = () => {
-        if (email === User.email && pw === User.pw) {
-            alert('로그인에 성공했습니다.');
+    const handleConfirmPassword = (e) => {
+        const value = e.target.value;
+        setConfirmPw(value);
+        setPwMatch(value === pw);
+    };
+
+    const onClickSignupButton = () => {
+        if (emailValid && pwValid && pwMatch) {
+            alert('회원가입에 성공했습니다.');
+            navigate('/'); // Redirect to the sign-in page
         } else {
-            alert('등록되지 않은 회원입니다');
+            alert('입력된 정보를 확인해주세요.');
         }
     };
 
     useEffect(() => {
-        if (emailValid && pwValid) {
+        if (emailValid && pwValid && pwMatch) {
             setNotAllow(false);
-            return;
+        } else {
+            setNotAllow(true);
         }
-        setNotAllow(true);
-    }, [emailValid, pwValid]);
+    }, [emailValid, pwValid, pwMatch]);
 
     return (
         <Page>
             <TitleWrap>
-                사용할 아이디와 비밀번호를
+                회원가입 정보를
                 <br />
                 입력해주세요
             </TitleWrap>
@@ -195,10 +203,26 @@ export default function Signin() {
                         )
                     }
                 </ErrorMessageWrap>
+                <InputTitle>비밀번호 확인</InputTitle>
+                <InputWrap>
+                    <Input 
+                        type='password'
+                        placeholder="비밀번호를 다시 입력해주세요"
+                        value={confirmPw}
+                        onChange={handleConfirmPassword}
+                    />
+                </InputWrap>
+                <ErrorMessageWrap>
+                    {
+                        !pwMatch && confirmPw.length > 0 && (
+                            <div>비밀번호가 일치하지 않습니다.</div>
+                        )
+                    }
+                </ErrorMessageWrap>
             </ContentWrap>
 
-            <BottomButton onClick={onClickConfirmButton} disabled={notAllow}>
-                확인
+            <BottomButton onClick={onClickSignupButton} disabled={notAllow}>
+                회원가입
             </BottomButton>
         </Page>
     );
