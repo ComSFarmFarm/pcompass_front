@@ -45,6 +45,15 @@ const InputTitle = styled.div`
     margin-left: 720px;
     margin-right: auto;
     width: 100%;
+    position: relative; /* Added for positioning the indicator */
+`;
+
+const RequiredIndicator = styled.span`
+    color: #ef0000;
+    font-size: 20px;
+    position: absolute;
+    right: -20px;
+    top: 0;
 `;
 
 const InputWrap = styled.div`
@@ -119,14 +128,35 @@ const BottomButton = styled.button`
     }
 `;
 
-// React component
+// 지역구 목록
+const regions = ["서울", "경기도", "경상북도", "전라남도", "충청북도", "전라북도", "충청남도"];
+// 서울시 구(군) 목록
+const seoulDistricts = ["강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구", "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구", "성북구", "송파구", "양천구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"];
+// 경기도 시/군 목록
+const gyeonggiCities = ["수원시", "성남시", "고양시", "용인시", "부천시", "안양시", "오산시", "평택시"];
+// 경상북도 시/군 목록
+const gyeongsangbukdoCities = ["경산시", "경주시", "구미시", "문경시", "상주", "안동시", "포항시"];
+// 전라남도 시/군 목록
+const jeollanamdoCities = ["광양시", "목포시", "여수시", "순천시", "해남군", "영암군"];
+// 충청북도 시/군 목록
+const chungcheongbukdoCities = ["청주시", "충주시", "제천시", "보은군", "옥천군"];
+// 전라북도 시/군 목록
+const jeollabukdoCities = ["전주시", "익산시", "군산시", "정읍시", "남원시", "김제시", "완주군"];
+// 충청남도 시/군 목록
+const chungcheongnamdoCities = ["천안시", "아산시", "공주시", "논산시", "보령시", "서산시", "계룡시"];
+
 export default function Inform() {
     const [name, setName] = useState('');
     const [gender, setGender] = useState('');
     const [dob, setDob] = useState('');
+    const [region, setRegion] = useState('');
+    const [city, setCity] = useState('');
 
     const [nameValid, setNameValid] = useState(false);
     const [dobValid, setDobValid] = useState(false);
+    const [genderValid, setGenderValid] = useState(false);
+    const [regionValid, setRegionValid] = useState(false); // Optional, not used in validation
+    const [cityValid, setCityValid] = useState(false); // Optional, not used in validation
     const [notAllow, setNotAllow] = useState(true);
 
     const navigate = useNavigate();
@@ -140,6 +170,7 @@ export default function Inform() {
     const handleGender = (e) => {
         const value = e.target.value;
         setGender(value);
+        setGenderValid(value !== '');
     };
 
     const handleDob = (e) => {
@@ -148,8 +179,21 @@ export default function Inform() {
         setDobValid(value.trim() !== '');
     };
 
+    const handleRegion = (e) => {
+        const value = e.target.value;
+        setRegion(value);
+        setRegionValid(value !== '');
+        setCity(''); // Reset city when region changes
+    };
+
+    const handleCity = (e) => {
+        const value = e.target.value;
+        setCity(value);
+        setCityValid(value !== '');
+    };
+
     const onClickConfirmButton = () => {
-        if (nameValid && dobValid && gender) {
+        if (nameValid && dobValid && genderValid) {
             alert('정보 입력이 완료되었습니다.');
             navigate('/'); // Redirect to the sign-in page or next step
         } else {
@@ -158,12 +202,12 @@ export default function Inform() {
     };
 
     useEffect(() => {
-        if (nameValid && dobValid && gender) {
+        if (nameValid && dobValid && genderValid) {
             setNotAllow(false);
         } else {
             setNotAllow(true);
         }
-    }, [nameValid, dobValid, gender]);
+    }, [nameValid, dobValid, genderValid]);
 
     return (
         <Page>
@@ -174,7 +218,10 @@ export default function Inform() {
             </TitleWrap>
 
             <ContentWrap>
-                <InputTitle>이름</InputTitle>
+                <InputTitle>
+                    이름
+                    <RequiredIndicator>*</RequiredIndicator>
+                </InputTitle>
                 <InputWrap>
                     <Input 
                         type='text'
@@ -190,7 +237,10 @@ export default function Inform() {
                         )
                     }
                 </ErrorMessageWrap>
-                <InputTitle>성별</InputTitle>
+                <InputTitle>
+                    성별
+                    <RequiredIndicator>*</RequiredIndicator>
+                </InputTitle>
                 <InputWrap>
                     <Select value={gender} onChange={handleGender}>
                         <option value="">성별 선택</option>
@@ -199,7 +249,17 @@ export default function Inform() {
                         <option value="other">기타</option>
                     </Select>
                 </InputWrap>
-                <InputTitle>생년월일</InputTitle>
+                <ErrorMessageWrap>
+                    {
+                        !genderValid && gender.length > 0 && (
+                            <div> 성별을 선택해주세요 </div>
+                        )
+                    }
+                </ErrorMessageWrap>
+                <InputTitle>
+                    생년월일
+                    <RequiredIndicator>*</RequiredIndicator>
+                </InputTitle>
                 <InputWrap>
                     <Input 
                         type='date'
@@ -211,6 +271,70 @@ export default function Inform() {
                     {
                         !dobValid && dob.length > 0 && (
                             <div> 생년월일을 입력해주세요 </div>
+                        )
+                    }
+                </ErrorMessageWrap>
+                <InputTitle>지역구 (선택)</InputTitle>
+                <InputWrap>
+                    <Select value={region} onChange={handleRegion}>
+                        <option value="">지역구 선택</option>
+                        {regions.map((region) => (
+                            <option key={region} value={region}>{region}</option>
+                        ))}
+                    </Select>
+                </InputWrap>
+                <ErrorMessageWrap>
+                    {
+                        !regionValid && region.length > 0 && (
+                            <div> 지역구를 선택해주세요 </div>
+                        )
+                    }
+                </ErrorMessageWrap>
+                <InputTitle>시/군 (선택)</InputTitle>
+                <InputWrap>
+                    <Select value={city} onChange={handleCity} disabled={!region}>
+                        <option value="">시/군 선택</option>
+                        {
+                            region === "서울" && seoulDistricts.map((district) => (
+                                <option key={district} value={district}>{district}</option>
+                            ))
+                        }
+                        {
+                            region === "경기도" && gyeonggiCities.map((city) => (
+                                <option key={city} value={city}>{city}</option>
+                            ))
+                        }
+                        {
+                            region === "경상북도" && gyeongsangbukdoCities.map((city) => (
+                                <option key={city} value={city}>{city}</option>
+                            ))
+                        }
+                        {
+                            region === "전라남도" && jeollanamdoCities.map((city) => (
+                                <option key={city} value={city}>{city}</option>
+                            ))
+                        }
+                        {
+                            region === "충청북도" && chungcheongbukdoCities.map((city) => (
+                                <option key={city} value={city}>{city}</option>
+                            ))
+                        }
+                        {
+                            region === "전라북도" && jeollabukdoCities.map((city) => (
+                                <option key={city} value={city}>{city}</option>
+                            ))
+                        }
+                        {
+                            region === "충청남도" && chungcheongnamdoCities.map((city) => (
+                                <option key={city} value={city}>{city}</option>
+                            ))
+                        }
+                    </Select>
+                </InputWrap>
+                <ErrorMessageWrap>
+                    {
+                        !cityValid && city.length > 0 && (
+                            <div> 시/군을 선택해주세요 </div>
                         )
                     }
                 </ErrorMessageWrap>
