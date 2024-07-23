@@ -4,10 +4,12 @@ import Signin from './Signin';
 import Signup from './Signup';
 import Inform from './Inform';
 import Main from './Main';
+import GlobalStyle from './GlobalStyle'; // Import GlobalStyle
 
 function App() {
     return (
         <Router>
+            <GlobalStyle /> {/* Apply GlobalStyle here */}
             <Routes>
                 <Route path="/" element={<Signin />} />
                 <Route path="/signin" element={<Signin />} />

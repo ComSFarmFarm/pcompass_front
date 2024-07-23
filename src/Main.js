@@ -1,241 +1,189 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { ReactComponent as RainbowSVG } from './img/rainbow.svg'; // Correct path
-import { ReactComponent as CloseSVG } from './img/x.svg'; // Adjust path if needed
 import { ReactComponent as LogoSVG } from './img/logo.svg'; // Adjust path to your logo SVG
-import { ReactComponent as YesSVG } from './img/yes.svg'; // Import yes SVG
-import { ReactComponent as NoSVG } from './img/no.svg'; // Import no SVG
+import { ReactComponent as RainbowSVG } from './img/rainbow.svg';
 
-// Styled components for the Main Page
+// Styled components
 
 const Page = styled.div`
-    width: 100%;
-    height: 100%;
-    margin: 0 auto;
-    padding: 0;
-    background-color: #F7F7F7;
+    background-color: #1E1E1E;
+    min-height: 100vh; /* Ensure the page takes up at least the full viewport height */
+    margin: 0; /* Remove default margin */
+    color: white; /* Default text color to white for better contrast */
+    padding-top: 70px; /* Add padding-top to avoid content overlapping with the Toolbar */
     display: flex;
     flex-direction: column;
+    align-items: center; /* Center horizontally */
+    justify-content: center; /* Center vertically */
+    text-align: center; /* Center text within container */
+    position: relative; /* To position the ButtonContainer absolutely at the bottom */
+`;
+
+const Toolbar = styled.div`
+    width: 100%;
+    height: 70px;
+    background-color: #1E1E1E;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
+    padding: 0 20px;
     box-sizing: border-box;
-    position: relative; /* Added for absolute positioning */
-    padding-bottom: 710px; /* Adjust this value as needed */
+    position: fixed;
+    top: 0;
+    left: 0;
+`;
+
+const Divider = styled.div`
+    width: 100%;
+    height: 1px;
+    background-color: #666;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+`;
+
+const ToolbarText = styled.span`
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+`;
+
+const TextContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-right: 50px;
+`;
+
+const TextLink = styled.span`
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color 0.3s;
+
+    &:hover {
+        color: #8528d4;
+    }
 `;
 
 const Logo = styled(LogoSVG)`
-    position: absolute;
-    top: 8px; /* Distance from the top */
-    left: 20px; /* Distance from the left */
-    width: 300px; /* Adjust size as needed */
-    height: auto; /* Maintain aspect ratio */
+    width: 200px;
+    height: auto;
+    margin-top: 45px;
+    margin-left: 50px;
 `;
 
-const LogoutButton = styled.button`
-    width: 100px;
-    height: 50px;
-    border: none;
-    font-weight: 700;
-    font-size: 16px;
-    background-color: #8528d4;
-    border-radius: 12px;
+const InfoText = styled.div`
+    color: #fff;
+    font-size: 50px;
+    font-weight: bold;
+    margin-top: -180px; /* Space from the top */
+`;
+
+const TestText = styled.div`
     color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    position: absolute; /* Positioning the button absolutely */
-    top: 20px; /* Distance from the top */
-    right: 20px; /* Distance from the right */
-
-    &:hover {
-        background-color: #5d1a90;
-    }
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 10px; /* Space from the top */
 `;
 
-const BoxContainer = styled.div`
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 20px; /* Space between boxes */
-    justify-content: center; /* Center the grid within the page */
-    max-width: 1300px; /* Maximum width of the grid container */
-    width: 100%; /* Full width up to max-width */
-    padding: 20px;
-    box-sizing: border-box;
-    margin-top: 120px; /* Space from the top of the page */
-`;
-
-const Box = styled.div`
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 40px; /* Increased padding for larger content area */
-    text-align: center;
-    max-width: 400px; /* Increased width of each box */
-    width: 100%; /* Make the box full width up to max-width */
-    position: relative; /* Needed for absolute positioning of CloseButton and SVGs */
-    box-sizing: border-box; /* Ensures padding does not affect width calculation */
+const CommandText = styled.div`
+    color: #F1D1FD;
+    font-size: 25px;
+    font-weight: bold;
+    margin-top: 60px; /* Space from the top */
 `;
 
 const StyledRainbowSVG = styled(RainbowSVG)`
-    margin-bottom: 20px; /* Space between the SVG and text */
+    width: 200px; /* Adjust width as needed */
+    height: auto;
+    margin-top: 30px; /* Space from the CommandText */
 `;
 
-const PromoText = styled.p`
-    font-size: 20px;
-    font-weight: 600;
-    color: #262626;
-    margin: 0 0 10px 0; /* Space below the text */
-    margin-top: 25px;
+const ButtonContainer = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Center buttons horizontally */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #1E1E1E; /* Same background color as the page */
 `;
 
-const AdditionalText = styled.p`
-    font-size: 16px;
-    font-weight: 500;
-    color: green; /* Green color for additional text */
-    margin: 0;
-    margin-top: 10px; /* Space between the original text and the additional text */
-    margin-bottom: 20px; /* Space between the additional text and the SVG buttons */
-`;
-
-const TestButton = styled.button`
-    width: 180px;
-    height: 40px;
-    border: none;
-    font-weight: 700;
-    font-size: 14px;
-    background-color: #626262;
-    border-radius: 12px;
+const StyledButton = styled.button`
+    background-color: #8528d4;
     color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 25px 0; /* Increased padding for more height */
+    width: 100%; /* Full width */
+    max-width: 100%; /* No maximum width */
+    font-size: 20px; /* Larger font size for better visibility */
+    font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
+    text-align: center; /* Center text inside the button */
+    box-sizing: border-box; /* Ensure padding is included in width */
 
     &:hover {
-        background-color: #8528d4;
+        background-color: #6e1aab;
     }
-    margin-top: 20px; /* Space between the text and button */
 `;
 
-const CloseButton = styled(CloseSVG)`
-    position: absolute;
-    top: 10px; /* Distance from the top of the box */
-    right: 10px; /* Distance from the right side of the box */
-    cursor: pointer;
-    width: 24px; /* Adjust size as needed */
-    height: 24px; /* Adjust size as needed */
-`;
-
-const YesButton = styled(YesSVG)`
-    cursor: pointer;
-    width: 300px; /* Increase size as needed */
-    height: auto; /* Increase size as needed */
-    margin-right: 10px; /* Reduced space between Yes and No button */
+const ButtonText = styled.div`
+    font-size: 18px; /* Larger font size to match button height */
     margin-top: 10px;
+    color: #f1f1f1;
 `;
 
-const NoButton = styled(NoSVG)`
-    cursor: pointer;
-    width: 300px; /* Increase size as needed */
-    height: auto; /* Increase size as needed */
-    margin-left: 0px; /* Reduced space between Yes and No button */
-    margin-top: 10px;
-`;
-
-// Data for each box
-const boxData = [
-    {
-        id: 1,
-        text: (
-            <>
-                당신의 폴스널 컬러 테스트를 <br />
-                받아보시겠습니까?
-            </>
-        ),
-        buttonText: '받아보기',
-    },
-    {
-        id: 2,
-        text: (
-            <>
-                유죄가 확정된 범죄자들에게도<br />
-                투표권을 가질 권리가 있을까요?
-            </>
-        ),
-        additionalText: '>> 매일 푸는 정치 퀴즈 232,432,342명 참여중',
-        buttonText: '그렇다',
-    },
-    {
-        id: 3,
-        text: '세 번째 컨테이너입니다. 다양한 색상을 시도해보세요.',
-        buttonText: '시작하기',
-    },
-    {
-        id: 4,
-        text: '내 정치 점수',
-        buttonText: '테스트하기',
-    },
-    {
-        id: 5,
-        text: '다섯 번째 컨테이너. 폴스널 컬러를 찾아보세요!',
-        buttonText: '지금 시작',
-    },
-    {
-        id: 6,
-        text: '여섯 번째 컨테이너입니다. 나만의 색상을 발견해보세요.',
-        buttonText: '체험하기',
-    },
-];
 
 const Main = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        // Handle logout functionality
-        navigate('/signin'); // Redirect to sign-in page or wherever necessary
+        navigate('/signin');
     };
 
-    const handleTestClick = (text) => {
-        // Handle the "받아보기" button click with specific text
-        alert(`버튼 클릭: ${text}`); // Replace with actual test functionality
-    };
-
-    const handleCloseClick = () => {
-        // Handle the close button click
-        alert('Close button clicked!'); // Replace with actual close functionality
-    };
-
-    const handleYesClick = () => {
-        // Handle the Yes button click
-        alert('Yes button clicked!'); // Replace with actual functionality
-    };
-
-    const handleNoClick = () => {
-        // Handle the No button click
-        alert('No button clicked!'); // Replace with actual functionality
+    const handleSignUp = () => {
+        navigate('/signup');
     };
 
     return (
         <Page>
-            <Logo />
-            <BoxContainer>
-                {boxData.map((data) => (
-                    <Box key={data.id}>
-                        <PromoText>{data.text}</PromoText>
-                        {data.id === 2 && (
-                            <>
-                                <AdditionalText>{data.additionalText}</AdditionalText>
-                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '20px' }}>
-                                    <YesButton onClick={handleYesClick} />
-                                    <NoButton onClick={handleNoClick} />
-                                </div>
-                            </>
-                        )}
-                        <CloseButton onClick={handleCloseClick} />
-                        {data.id === 1 && <StyledRainbowSVG width={148} height={107} />}
-                        {data.id !== 2 && <TestButton onClick={() => handleTestClick(data.buttonText)}>{data.buttonText}</TestButton>}
-                    </Box>
-                ))}
-            </BoxContainer>
-            <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
+            <Toolbar>
+                <ToolbarText>
+                    <Logo />
+                </ToolbarText>
+                <TextContainer>
+                    <TextLink onClick={handleLogout}>Logout</TextLink>
+                    <TextLink onClick={handleSignUp}>Sign Up</TextLink>
+                </TextContainer>
+                <Divider />
+            </Toolbar>
+
+            <InfoText>
+                폴스널 컬러테스트
+            </InfoText>
+            <TestText>
+                Politics-Persnal Color Test
+            </TestText>
+            <CommandText>
+                당신의 정치 성향을 테스트해보세요!
+            </CommandText>
+            <StyledRainbowSVG />
+
+            <ButtonContainer>
+                <StyledButton>
+                    시작하기
+                    <ButtonText>
+                        현재 38429834명이 참여했어요.
+                    </ButtonText>
+                </StyledButton>
+            </ButtonContainer>
         </Page>
     );
 };
