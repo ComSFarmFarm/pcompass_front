@@ -1,10 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { ReactComponent as LogoSVG } from './img/logo.svg'; // Adjust path to your logo SVG
+import { ReactComponent as LogoSVG } from './img/logo.svg';
 import { ReactComponent as RainbowSVG } from './img/rainbow.svg';
-
-// Styled components
 
 const Page = styled.div`
     background-color: #18181D;
@@ -15,7 +13,6 @@ const Page = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center; /* Center horizontally */
-    justify-content: center; /* Center vertically */
     text-align: center; /* Center text within container */
     position: relative; /* To position the ButtonContainer absolutely at the bottom */
 `;
@@ -32,6 +29,7 @@ const Toolbar = styled.div`
     position: fixed;
     top: 0;
     left: 0;
+    margin-bottom: 0px;
 `;
 
 const Divider = styled.div`
@@ -77,63 +75,54 @@ const Logo = styled(LogoSVG)`
 
 const InfoText = styled.div`
     color: #fff;
-    font-size: 50px;
+    font-size: 40px;
     font-weight: bold;
-    margin-top: 200px; /* Space from the top */
-`;
-
-const TestText = styled.div`
-    color: white;
-    font-size: 30px;
-    font-weight: bold;
-    margin-top: 10px; /* Space from the top */
-`;
-
-const CommandText = styled.div`
-    color: #F1D1FD;
-    font-size: 25px;
-    font-weight: bold;
-    margin-top: 60px; /* Space from the top */
+    margin-top: 100px; /* Space from the top */
+    margin-bottom: 0px;
 `;
 
 const StyledRainbowSVG = styled(RainbowSVG)`
-    width: 200px; /* Adjust width as needed */
+    width: 130px; /* Adjust width as needed */
     height: auto;
-    margin-top: 30px; /* Space from the CommandText */
+    margin-top: 50px; /* Space from the CommandText */
 `;
 
-const StyledButton = styled.button`
-    background-color: black;
+const TestText = styled.div`
+    color: #8459FF;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 50px; /* Space from the top */
+`;
+
+const AdditionalText = styled.div`
+    color: #fff;
+    font-size: 20px;
+    margin-top: 40px; /* Space from the top */
+    line-height: 1.5; /* Adjust line height for better readability */
+    margin-bottom: 50px;
+`;
+
+const NextButton = styled.button`
+    background-color: #8459FF;
     color: white;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 20px 200px;
     border: none;
     border-radius: 5px;
-    padding: 25px 0; /* Increased padding for more height */
-    width: calc(100% - 40px); /* Full width with padding considered */
-    max-width: 100%; /* No maximum width */
-    font-size: 20px; /* Larger font size for better visibility */
-    font-weight: bold;
     cursor: pointer;
+    margin-bottom: 0px; /* Space from the bottom */
     transition: background-color 0.3s;
-    text-align: center; /* Center text inside the button */
-    box-sizing: border-box; /* Ensure padding is included in width */
-    margin: 0px; /* Add margin for spacing */
-    margin-top: 280px;
+    margin-top: 120px;
 
     &:hover {
-        background-color: #8528d4;
+        background-color: #673ab7;
     }
-    &:hover div {
-        color: white;
+
+    &:active {
+        background-color: #512da8;
     }
 `;
-
-const ButtonText = styled.div`
-    font-size: 18px; /* Larger font size to match button height */
-    margin-top: 10px;
-    color: #6e1aab;
-    transition: color 0.3s;
-`;
-
 
 const Main = () => {
     const navigate = useNavigate();
@@ -162,24 +151,21 @@ const Main = () => {
                 </TextContainer>
                 <Divider />
             </Toolbar>
-
             <InfoText>
-                폴스널 컬러테스트
+                폴스널 컬러테스트란?
             </InfoText>
-            <TestText>
-                (Politics-Persnal Color Test)
-            </TestText>
-            <CommandText>
-                당신의 정치 성향을 테스트해보세요!
-            </CommandText>
             <StyledRainbowSVG />
-
-            <StyledButton onClick={handleStartTest}>
-                시작하기
-                <ButtonText>
-                    현재 38429834명이 참여했어요.
-                </ButtonText>
-            </StyledButton>
+            <TestText>
+                MBTI와 같은 방식으로 나만의 정치색을 만들어 봐요!
+            </TestText>
+            <AdditionalText>
+                0000 기간 동안 000명의 여론조사를 거쳐<br />
+                한국인의 정치성향 분류 모델을 만들었습니다.<br /><br />
+                대표적인 7개의 당 색을 조합한 나만의 정치색,<br />
+                즉 Politics-personal color 를 볼 수 있습니다.<br /><br />
+                '나의 정치색'을 확인해보세요!
+            </AdditionalText>
+            <NextButton onClick={handleStartTest}>다음</NextButton>
         </Page>
     );
 };
