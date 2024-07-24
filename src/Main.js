@@ -79,7 +79,7 @@ const InfoText = styled.div`
     color: #fff;
     font-size: 50px;
     font-weight: bold;
-    margin-top: -180px; /* Space from the top */
+    margin-top: 200px; /* Space from the top */
 `;
 
 const TestText = styled.div`
@@ -102,25 +102,13 @@ const StyledRainbowSVG = styled(RainbowSVG)`
     margin-top: 30px; /* Space from the CommandText */
 `;
 
-const ButtonContainer = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: center; /* Center buttons horizontally */
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    padding: 20px;
-    box-sizing: border-box;
-    background-color: #1E1E1E; /* Same background color as the page */
-`;
-
 const StyledButton = styled.button`
-    background-color: #8528d4;
+    background-color: black;
     color: white;
     border: none;
     border-radius: 5px;
     padding: 25px 0; /* Increased padding for more height */
-    width: 100%; /* Full width */
+    width: calc(100% - 40px); /* Full width with padding considered */
     max-width: 100%; /* No maximum width */
     font-size: 20px; /* Larger font size for better visibility */
     font-weight: bold;
@@ -128,16 +116,22 @@ const StyledButton = styled.button`
     transition: background-color 0.3s;
     text-align: center; /* Center text inside the button */
     box-sizing: border-box; /* Ensure padding is included in width */
+    margin: 0px; /* Add margin for spacing */
+    margin-top: 280px;
 
     &:hover {
-        background-color: #6e1aab;
+        background-color: #8528d4;
+    }
+    &:hover div {
+        color: white;
     }
 `;
 
 const ButtonText = styled.div`
     font-size: 18px; /* Larger font size to match button height */
     margin-top: 10px;
-    color: #f1f1f1;
+    color: #6e1aab;
+    transition: color 0.3s;
 `;
 
 
@@ -176,14 +170,12 @@ const Main = () => {
             </CommandText>
             <StyledRainbowSVG />
 
-            <ButtonContainer>
-                <StyledButton>
-                    시작하기
-                    <ButtonText>
-                        현재 38429834명이 참여했어요.
-                    </ButtonText>
-                </StyledButton>
-            </ButtonContainer>
+            <StyledButton>
+                시작하기
+                <ButtonText>
+                    현재 38429834명이 참여했어요.
+                </ButtonText>
+            </StyledButton>
         </Page>
     );
 };
