@@ -1,0 +1,10 @@
+/* map.css */
+.region {
+    fill: #818283; /* 기본 색상 */
+    transition: fill 0.3s;
+  }
+  
+  .region.active {
+    fill: #8528d4; /* 클릭 시 색상 */
+  }
+  

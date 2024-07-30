@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import PageWrapper from '../components/PageWrapper';
 import { ReactComponent as MapSVG } from '../img/map.svg';
 import { ReactComponent as MapnameSVG } from '../img/mapname.svg';
-import { ReactComponent as RainbowSVG } from '../img/rainbow.svg'; // Import Rainbow SVG
-import { ReactComponent as YesSVG } from '../img/yes.svg'; // Import Yes SVG
-import { ReactComponent as NoSVG } from '../img/no.svg'; // Import No SVG
+import { ReactComponent as RainbowSVG } from '../img/rainbow.svg';
+import { ReactComponent as YesSVG } from '../img/yes.svg';
+import { ReactComponent as NoSVG } from '../img/no.svg';
 
 const boxData = [
     {
@@ -29,7 +29,7 @@ const boxData = [
             </>
         ),
         additionalText: '>> 매일 푸는 정치 퀴즈 232,432,342명 참여중',
-        buttonText: null, // No button text for box 2
+        buttonText: null,
         svg: null,
         width: '500px',
         height: '250px',
@@ -42,8 +42,18 @@ const boxData = [
     },
 ];
 
+const regionButtons = [
+    '경기', '강원', '인천', 
+    '서울', '충북', '충남',
+    '세종', '대전', '경북',
+    '대구', '전북', '광주',
+    '전남', '경남', '울산',
+    '부산', '제주'
+];
+
 const Map = () => {
     const [isMapName, setIsMapName] = useState(false);
+    const [clickedRegion, setClickedRegion] = useState(null); // 클릭된 버튼 상태 관리
     const navigate = useNavigate();
 
     const handleToggleMap = () => {
@@ -58,6 +68,11 @@ const Map = () => {
         }
     };
 
+    const handleRegionClick = (region) => {
+        setClickedRegion(region); // 클릭된 버튼 저장
+        alert(`${region} 버튼 클릭됨`);
+    };
+
     return (
         <PageWrapper>
             <Container>
@@ -68,8 +83,22 @@ const Map = () => {
                         <MapSVG style={svgStyle} />
                     )}
                 </MapContainer>
-                
-                <ContainerWrapper>
+
+                <ButtonsContainer>
+                    <ButtonGrid>
+                        {regionButtons.map((region, index) => (
+                            <RegionButton 
+                                key={index} 
+                                isClicked={clickedRegion === region}
+                                onClick={() => handleRegionClick(region)}
+                            >
+                                {region}
+                            </RegionButton>
+                        ))}
+                    </ButtonGrid>
+                </ButtonsContainer>
+
+                <ContentWrapper>
                     {boxData.map((data, index) => (
                         <StyledContainer
                             key={index}
@@ -79,7 +108,7 @@ const Map = () => {
                             {data.svg && <SvgContainer>{data.svg}</SvgContainer>}
                             <PromoText>{data.text}</PromoText>
                             {data.additionalText && <AdditionalText>{data.additionalText}</AdditionalText>}
-                            {index === 1 && ( // For the second box
+                            {index === 1 && (
                                 <ButtonContainer>
                                     <SvgButton onClick={() => alert('Yes button clicked')}>
                                         <YesSVG width={170} height={170} />
@@ -92,7 +121,7 @@ const Map = () => {
                             {data.buttonText && <TestButton onClick={() => handleButtonClick(data.buttonText)}>{data.buttonText}</TestButton>}
                         </StyledContainer>
                     ))}
-                </ContainerWrapper>
+                </ContentWrapper>
             </Container>
 
             <StyledButton onClick={handleToggleMap}>
@@ -105,24 +134,62 @@ const Map = () => {
 const svgStyle = {
     width: '600px',
     height: 'auto',
-    
 };
 
 const Container = styled.div`
     display: flex;
     align-items: flex-start;
     margin-top: 50px;
+    margin-right: 40px;
 `;
 
 const MapContainer = styled.div`
     flex-shrink: 0;
-    margin-top: 50px;
+    margin-top: 70px;
+    margin-left: 0px;
+    margin-right: 60px;
 `;
 
-const ContainerWrapper = styled.div`
+const ButtonsContainer = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 70px;
+    margin-right: 210px;
+`;
+
+const ButtonGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    gap: 10px; /* Space between buttons */
+    width: 100%;
+    max-width: 600px; /* Adjust width as needed */
+    margin-top: 20px; /* Space between button grid and other content */
+`;
+
+const RegionButton = styled.button`
+    background-color: ${({ isClicked }) => (isClicked ? '#8528d4' : '#ffffff')}; /* 보라색 배경 색상 */
+    color: ${({ isClicked }) => (isClicked ? '#ffffff' : '#000000')}; /* 흰색 텍스트 */
+    border: 2px solid ${({ isClicked }) => (isClicked ? '#8528d4' : '#000000')}; /* 보라색 테두리 */
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+
+    &:hover {
+        background-color: ${({ isClicked }) => (isClicked ? '#8528d4' : '#f1f1f1')}; /* 보라색 배경 색상 */
+        border-color: #8528d4; /* 보라색 테두리 */
+    }
+`;
+
+
+const ContentWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    margin-left: 50px;
+    align-items: center;
+    margin-left: 0px;
+    flex: 1;
 `;
 
 const StyledButton = styled.button`
@@ -161,8 +228,9 @@ const StyledContainer = styled.div`
     font-size: 20px;
     border-radius: 20px;
     box-sizing: border-box;
-    margin-left: 500px;
-    margin-bottom: 20px;
+    margin-top: 40px;
+    margin-left: 150px;
+    margin-bottom: -20px;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
@@ -206,7 +274,7 @@ const TestButton = styled.button`
 
 const ButtonContainer = styled.div`
     display: flex;
-    gap: 20px; /* Space between SVG buttons */
+    gap: 20px;
     margin-top: -20px;
     margin-bottom: -30px;
 `;
