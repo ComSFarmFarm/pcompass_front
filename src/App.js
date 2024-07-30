@@ -6,6 +6,7 @@ import Signup from './Signup';
 import Inform from './Inform';
 import Main from './Main';
 import Test from './Test';
+import Map from './Map';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
                 <Route path="/inform" element={<Inform />} />
                 <Route path="/main" element={<Main />} />
                 <Route path="/test" element={<Test />} />
+                <Route path="/map" element={<Map />} />           
             </Routes>
         </Router>
     );
