@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // 라우팅 훅 임포트
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import PageWrapper from '../components/PageWrapper';
 import { ReactComponent as MapSVG } from '../img/map.svg';
 import { ReactComponent as MapnameSVG } from '../img/mapname.svg';
 import { ReactComponent as RainbowSVG } from '../img/rainbow.svg'; // Import Rainbow SVG
+import { ReactComponent as YesSVG } from '../img/yes.svg'; // Import Yes SVG
+import { ReactComponent as NoSVG } from '../img/no.svg'; // Import No SVG
 
-// Filtered data for each box (excluding ids 3, 5, 6)
 const boxData = [
     {
         text: (
@@ -16,9 +17,9 @@ const boxData = [
             </>
         ),
         buttonText: '받아보기',
-        svg: <RainbowSVG width={148} height={107} />, // SVG for box 1
-        width: '500px', // Custom width for box 1
-        height: '300px', // Custom height for box 1
+        svg: <RainbowSVG width={120} height={107} />,
+        width: '500px',
+        height: '280px',
     },
     {
         text: (
@@ -28,22 +29,22 @@ const boxData = [
             </>
         ),
         additionalText: '>> 매일 푸는 정치 퀴즈 232,432,342명 참여중',
-        buttonText: '그렇다',
-        svg: null, // No SVG for box 2
-        width: '500px', // Custom width for box 2
-        height: '200px', // Custom height for box 2
+        buttonText: null, // No button text for box 2
+        svg: null,
+        width: '500px',
+        height: '250px',
     },
     {
         text: '내 정치 점수',
         buttonText: '테스트하기',
-        width: '500px', // Custom width for box 4
-        height: '150px', // Custom height for box 4
+        width: '500px',
+        height: '150px',
     },
 ];
 
 const Map = () => {
     const [isMapName, setIsMapName] = useState(false);
-    const navigate = useNavigate(); // 라우팅 훅
+    const navigate = useNavigate();
 
     const handleToggleMap = () => {
         setIsMapName(prevIsMapName => !prevIsMapName);
@@ -51,7 +52,7 @@ const Map = () => {
 
     const handleButtonClick = (buttonText) => {
         if (buttonText === '받아보기') {
-            navigate('/main'); // '받아보기' 버튼 클릭 시 main 페이지로 이동
+            navigate('/main');
         } else {
             alert(`버튼 클릭: ${buttonText}`);
         }
@@ -60,7 +61,6 @@ const Map = () => {
     return (
         <PageWrapper>
             <Container>
-                {/* Display the appropriate map SVG based on the state */}
                 <MapContainer>
                     {isMapName ? (
                         <MapnameSVG style={svgStyle} />
@@ -69,24 +69,32 @@ const Map = () => {
                     )}
                 </MapContainer>
                 
-                {/* Container boxes positioned to the right of the map */}
                 <ContainerWrapper>
-                    {boxData.map((data) => (
-                        <StyledContainer 
-                            key={data.id} 
-                            width={data.width} 
+                    {boxData.map((data, index) => (
+                        <StyledContainer
+                            key={index}
+                            width={data.width}
                             height={data.height}
                         >
                             {data.svg && <SvgContainer>{data.svg}</SvgContainer>}
                             <PromoText>{data.text}</PromoText>
                             {data.additionalText && <AdditionalText>{data.additionalText}</AdditionalText>}
-                            <TestButton onClick={() => handleButtonClick(data.buttonText)}>{data.buttonText}</TestButton>
+                            {index === 1 && ( // For the second box
+                                <ButtonContainer>
+                                    <SvgButton onClick={() => alert('Yes button clicked')}>
+                                        <YesSVG width={170} height={170} />
+                                    </SvgButton>
+                                    <SvgButton onClick={() => alert('No button clicked')}>
+                                        <NoSVG width={170} height={170} />
+                                    </SvgButton>
+                                </ButtonContainer>
+                            )}
+                            {data.buttonText && <TestButton onClick={() => handleButtonClick(data.buttonText)}>{data.buttonText}</TestButton>}
                         </StyledContainer>
                     ))}
                 </ContainerWrapper>
             </Container>
 
-            {/* Button to toggle map */}
             <StyledButton onClick={handleToggleMap}>
                 {isMapName ? '지역명 끄기' : '지역명 보기'}
             </StyledButton>
@@ -97,23 +105,24 @@ const Map = () => {
 const svgStyle = {
     width: '600px',
     height: 'auto',
+    
 };
 
 const Container = styled.div`
     display: flex;
-    align-items: flex-start; /* Align items to the top of the container */
-    margin-top: 50px; /* Space from the top */
+    align-items: flex-start;
+    margin-top: 50px;
 `;
 
 const MapContainer = styled.div`
-    flex-shrink: 0; /* Prevent shrinking of map container */
+    flex-shrink: 0;
     margin-top: 50px;
 `;
 
 const ContainerWrapper = styled.div`
     display: flex;
-    flex-direction: column; /* Stack boxes vertically */
-    margin-left: 50px; /* Add margin to push boxes right */
+    flex-direction: column;
+    margin-left: 50px;
 `;
 
 const StyledButton = styled.button`
@@ -128,12 +137,12 @@ const StyledButton = styled.button`
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
-    text-align: center; /* Center text within the button */
+    text-align: center;
     box-sizing: border-box;
     margin-top: 100px;
-    display: block; /* Ensure button is on a new line */
-    margin-left: auto; /* Center button horizontally */
-    margin-right: auto; /* Center button horizontally */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 
     &:hover {
         background-color: #8528d4;
@@ -143,31 +152,31 @@ const StyledButton = styled.button`
 const StyledContainer = styled.div`
     background-color: black;
     color: white;
-    width: ${({ width }) => width || '400px'}; /* Use the width from props or default to 400px */
-    height: ${({ height }) => height || '250px'}; /* Use the height from props or default to 250px */
+    width: ${({ width }) => width || '400px'};
+    height: ${({ height }) => height || '250px'};
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 20px; /* Larger font size */
+    font-size: 20px;
     border-radius: 20px;
     box-sizing: border-box;
     margin-left: 500px;
-    margin-bottom: 30px; /* Increased space between the boxes */
-    padding: 20px; /* Added padding */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for better appearance */
+    margin-bottom: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const SvgContainer = styled.div`
-    margin-bottom: 20px; /* Space between the SVG and text */
+    margin-bottom: -5px;
 `;
 
 const PromoText = styled.p`
     font-size: 20px;
     font-weight: 600;
     color: white;
-    margin: 0;
-    text-align: center; /* Center text within the container */
+    margin-top: 10px;
+    text-align: center;
 `;
 
 const AdditionalText = styled.p`
@@ -189,9 +198,25 @@ const TestButton = styled.button`
     cursor: pointer;
     transition: background-color 0.3s;
     margin-top: 20px;
-
+    margin-bottom: 10px;
     &:hover {
         background-color: #8528d4;
+    }
+`;
+
+const ButtonContainer = styled.div`
+    display: flex;
+    gap: 20px; /* Space between SVG buttons */
+    margin-top: -20px;
+    margin-bottom: -30px;
+`;
+
+const SvgButton = styled.div`
+    cursor: pointer;
+    transition: opacity 0.3s;
+
+    &:hover {
+        opacity: 0.8;
     }
 `;
 
