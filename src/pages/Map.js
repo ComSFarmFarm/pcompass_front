@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // 라우팅 훅 임포트
 import styled from 'styled-components';
-import PageWrapper from './PageWrapper';
-import { ReactComponent as MapSVG } from './img/map.svg';
-import { ReactComponent as MapnameSVG } from './img/mapname.svg';
-import { ReactComponent as RainbowSVG } from './img/rainbow.svg'; // Import Rainbow SVG
+import PageWrapper from '../components/PageWrapper';
+import { ReactComponent as MapSVG } from '../img/map.svg';
+import { ReactComponent as MapnameSVG } from '../img/mapname.svg';
+import { ReactComponent as RainbowSVG } from '../img/rainbow.svg'; // Import Rainbow SVG
 
 // Filtered data for each box (excluding ids 3, 5, 6)
 const boxData = [

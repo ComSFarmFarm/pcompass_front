@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import Logo from './components/Logo'; // Adjust path to your Logo component
+import Logo from '../components/Logo'; // Adjust path to your Logo component
 
 const Page = styled.div`
     background-color: #18181D;

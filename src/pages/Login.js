@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { login } from '../api';
 
 // Styled components
 const Page = styled.div`
@@ -96,7 +97,7 @@ const BottomButton = styled.button`
     color: white;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin: 140px auto;
+    margin: 50px auto 20px auto; /* 버튼의 아래쪽 마진을 조절 */
     display: block;
 
     &:disabled {
@@ -110,19 +111,35 @@ const BottomButton = styled.button`
     }
 `;
 
+const SignupText = styled.div`
+    text-align: center;
+    font-size: 16px;
+    color: #000000;
+    cursor: pointer;
+    margin-top: 10px; /* 텍스트의 위쪽 마진을 조절 */
+    margin-bottom: 300px;
+
+    &:hover {
+        text-decoration: underline;
+    }
+`;
+
 // React component
-export default function Signup() {
+//const User = {
+//    email: 'comsfarmfarm',
+//    pw: 'comsfarm2024!'
+//};
+
+export default function Signin() {
     const [email, setEmail] = useState('');
     const [pw, setPw] = useState('');
-    const [confirmPw, setConfirmPw] = useState('');
 
     const [emailValid, setEmailValid] = useState(false);
     const [pwValid, setPwValid] = useState(false);
-    const [pwMatch, setPwMatch] = useState(true);
-    const [notAllow, setNotAllow] = useState(true);
+    const [notAllow, setNotAllow] = useState(false);
 
     const navigate = useNavigate();
-    
+
     const handleEmail = (e) => {
         const value = e.target.value;
         setEmail(value);
@@ -133,38 +150,36 @@ export default function Signup() {
     const handlePassword = (e) => {
         const value = e.target.value;
         setPw(value);
-        const regex = 
-            /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&()\-_=+])(?!.*[^a-zA-Z0-9$`~!@$!%*#^?&()\-_=+]).{8,20}$/;
+        const regex = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&()\-_=+])(?!.*[^a-zA-Z0-9$`~!@$!%*#^?&()\-_=+]).{8,20}$/;
         setPwValid(regex.test(value));
     };
 
-    const handleConfirmPassword = (e) => {
-        const value = e.target.value;
-        setConfirmPw(value);
-        setPwMatch(value === pw);
-    };
-
-    const onClickSignupButton = () => {
-        if (emailValid && pwValid && pwMatch) {
-            alert('개인정보를 입력해주세요.');
-            navigate('/inform'); // Navigate to the information page
+    const onClickConfirmButton = async () => {
+        if (emailValid && pwValid) {
+            try {
+                await login({ user_id: email, password: pw }); // response 변수 삭제
+                navigate('/main'); // 로그인 성공 시 메인 페이지로 이동
+            } catch (error) {
+                alert(error.message);
+            }
         } else {
             alert('입력된 정보를 확인해주세요.');
         }
     };
+    
 
     useEffect(() => {
-        if (emailValid && pwValid && pwMatch) {
+        if (emailValid && pwValid) {
             setNotAllow(false);
-        } else {
-            setNotAllow(true);
+            return;
         }
-    }, [emailValid, pwValid, pwMatch]);
+        setNotAllow(true);
+    }, [emailValid, pwValid]);
 
     return (
         <Page>
             <TitleWrap>
-                회원가입 정보를
+                아이디와 비밀번호를
                 <br />
                 입력해주세요
             </TitleWrap>
@@ -202,27 +217,16 @@ export default function Signup() {
                         )
                     }
                 </ErrorMessageWrap>
-                <InputTitle>비밀번호 확인</InputTitle>
-                <InputWrap>
-                    <Input 
-                        type='password'
-                        placeholder="비밀번호를 다시 입력해주세요"
-                        value={confirmPw}
-                        onChange={handleConfirmPassword}
-                    />
-                </InputWrap>
-                <ErrorMessageWrap>
-                    {
-                        !pwMatch && confirmPw.length > 0 && (
-                            <div>비밀번호가 일치하지 않습니다.</div>
-                        )
-                    }
-                </ErrorMessageWrap>
             </ContentWrap>
 
-            <BottomButton onClick={onClickSignupButton} disabled={notAllow}>
-                다음
+            <BottomButton onClick={onClickConfirmButton} disabled={notAllow}>
+                확인
             </BottomButton>
+
+            <SignupText onClick={() => navigate('/signup')}>
+                회원가입
+            </SignupText>
+
         </Page>
     );
 }

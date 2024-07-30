@@ -1,9 +1,9 @@
-// Main.js
+// src/pages/Main.js
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import Page from './PageWrapper'; // Adjust path to your PageWrapper component
-import { ReactComponent as RainbowSVG } from './img/rainbow.svg';
+import PageWrapper from '../components/PageWrapper'; // Correct path to PageWrapper
+import { ReactComponent as RainbowSVG } from '../img/rainbow.svg';
 
 const InfoText = styled.div`
     color: #fff;
@@ -69,7 +69,7 @@ const Main = () => {
     };
 
     return (
-        <Page>
+        <PageWrapper>
             <InfoText>
                 폴스널 컬러테스트
             </InfoText>
@@ -86,7 +86,7 @@ const Main = () => {
                     현재 38429834명이 참여했어요.
                 </ButtonText>
             </StyledButton>
-        </Page>
+        </PageWrapper>
     );
 };
 

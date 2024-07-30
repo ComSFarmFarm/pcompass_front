@@ -1,8 +1,8 @@
 // test.js
 import React from 'react';
-import PageWrapper from './PageWrapper'; // Adjust path to your PageWrapper component
+import PageWrapper from '../components/PageWrapper'; // Adjust path to your PageWrapper component
 import styled from 'styled-components';
-import Rainbow from './components/Rainbow'; // Adjust path to your Rainbow component
+import Rainbow from '../components/Rainbow'; // Adjust path to your Rainbow component
 
 const InfoText = styled.div`
     color: #fff;
