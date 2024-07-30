@@ -7,6 +7,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 In the project directory, you can run:
 ### `nvm install 16`
 ### `nvm use 16`
+### `npm install`
 ### `npm install react-router-dom`
 ### `npm start`
 
