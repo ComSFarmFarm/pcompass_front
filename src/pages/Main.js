@@ -17,7 +17,7 @@ const boxData = [
             </>
         ),
         buttonText: '받아보기',
-        svg: <RainbowSVG width={120} height={110} />,
+        svg: <RainbowSVG width={120} height={107} />,
         width: '500px',
         height: '300px',
     },
@@ -42,7 +42,7 @@ const boxData = [
             </>
         ),
         buttonText: '최신 정치 이슈 보러가기',
-        svg: <NewsSVG width={192} height={112} />,
+        svg: <NewsSVG width={180} height={100} />,
         width: '500px',
         height: '300px',
     },
@@ -150,7 +150,8 @@ const TextContainer = styled.div`
 `;
 
 const SvgContainer = styled.div`
-    margin-top: 10px;
+    margin-top: 15px;
+    margin-bottom: 10px;
     border-radius: 20px; /* Adjust the border-radius as needed */
     overflow: hidden; /* Ensures that the rounded corners are applied to the SVG */
     width: fit-content; /* Adjusts width to fit the SVG content */
@@ -174,7 +175,7 @@ const AdditionalText = styled.p`
 `;
 
 const TestButton = styled.button`
-    width: 200px;
+    width: 180px;
     height: 40px;
     border: none;
     font-weight: 700;

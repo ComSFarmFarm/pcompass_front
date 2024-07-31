@@ -130,7 +130,7 @@ const SignupText = styled.div`
 //    pw: 'comsfarm2024!'
 //};
 
-export default function Signin() {
+export default function Login() {
     const [email, setEmail] = useState('');
     const [pw, setPw] = useState('');
 
