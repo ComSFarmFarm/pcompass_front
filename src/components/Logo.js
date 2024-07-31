@@ -18,7 +18,7 @@ const Logo = () => {
     const navigate = useNavigate();
 
     const handleLogoClick = () => {
-        navigate('/map');
+        navigate('/main');
     };
 
     return (

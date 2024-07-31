@@ -3,9 +3,9 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import GlobalStyle from './components/GlobalStyle'; // Import GlobalStyle
 import Signin from './pages/Login';
 import Signup from './pages/Signup';
-import Main from './pages/Main';
+import First from './pages/First';
 import Test from './pages/Test';
-import Map from './pages/Map';
+import Main from './pages/Main';
 
 
 function App() {
@@ -16,9 +16,9 @@ function App() {
                 <Route path="/" element={<Signin />} />
                 <Route path="/login" element={<Signin />} />
                 <Route path="/signup" element={<Signup />} />
-                <Route path="/main" element={<Main />} />
+                <Route path="/first" element={<First />} />
                 <Route path="/test" element={<Test />} />
-                <Route path="/map" element={<Map />} />           
+                <Route path="/main" element={<Main />} />           
             </Routes>
         </Router>
     );

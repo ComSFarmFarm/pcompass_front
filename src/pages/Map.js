@@ -51,7 +51,7 @@ const regionButtons = [
     '부산', '제주'
 ];
 
-const Map = () => {
+const Main = () => {
     const [isMapName, setIsMapName] = useState(false);
     const [clickedRegion, setClickedRegion] = useState(null); // 클릭된 버튼 상태 관리
     const navigate = useNavigate();
@@ -288,4 +288,4 @@ const SvgButton = styled.div`
     }
 `;
 
-export default Map;
+export default Main;
