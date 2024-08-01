@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signup } from '../api';
+import axios from 'axios';
+
 
 // Styled components
 const Page = styled.div`
@@ -230,31 +231,30 @@ export default function Signup() {
     const [email, setEmail] = useState('');
     const [pw, setPw] = useState('');
     const [pwConfirm, setPwConfirm] = useState('');
-    const [name, setName] = useState('');
+    const [username, setUsername] = useState('');
     const [gender, setGender] = useState('');
-    const [birthDate, setBirthDate] = useState('');
+    const [birth_date, setBirthDate] = useState('');
     const [region, setRegion] = useState('');
     const [city, setCity] = useState('');
-    const [party, setParty] = useState('');
+    const [preferred_party, setPreferredParty] = useState('');
     const [emailValid, setEmailValid] = useState(false);
     const [pwValid, setPwValid] = useState(false);
     const [pwMatch, setPwMatch] = useState(false);
     const [notAllow, setNotAllow] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
-
     const navigate = useNavigate();
 
     const handleEmail = (e) => {
         const value = e.target.value;
-        setEmail(value);
         const idRegex = /^[a-zA-Z0-9]{4,20}$/;
+        setEmail(value);
         setEmailValid(idRegex.test(value));
     };
 
     const handlePassword = (e) => {
         const value = e.target.value;
-        setPw(value);
         const regex = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[$~!@$!%*#^?&()\-_=+])(?!.*[^a-zA-Z0-9$~!@$!%*#^?&()\-_=+]).{8,20}$/;
+        setPw(value);
         setPwValid(regex.test(value));
     };
 
@@ -264,8 +264,8 @@ export default function Signup() {
         setPwMatch(value === pw);
     };
 
-    const handleName = (e) => {
-        setName(e.target.value);
+    const handleUsername = (e) => {
+        setUsername(e.target.value);
     };
 
     const handleGender = (e) => {
@@ -285,8 +285,8 @@ export default function Signup() {
         setCity(e.target.value);
     };
 
-    const handleParty = (e) => {
-        setParty(e.target.value);
+    const handlePreferredParty = (e) => {
+        setPreferredParty(e.target.value);
     };
 
     const formatDate = (date) => {
@@ -296,21 +296,22 @@ export default function Signup() {
     };
 
     const onClickConfirmButton = async () => {
-        if (emailValid && pwValid && pwMatch && name && gender && birthDate && region && city) {
+        if (emailValid && pwValid && pwMatch && username && gender && birth_date && region && city) {
             try {
-                await signup({ 
+                const response = await axios.post('http://13.124.10.62:8080/auth/signup', {
                     user_id: email, 
                     password: pw, 
-                    name, 
+                    username, // Changed from name to username
                     gender: convertGender(gender), // Convert gender to 'M' or 'F'
-                    birthDate: formatDate(birthDate), // Convert date to YYYYMMDD format
+                    birth_date: formatDate(birth_date), // Convert date to YYYYMMDD format
                     region, 
                     city,
-                    party // Add party preference
+                    preferred_party // Add preferred_party preference
                 });
+                console.log(response.data);
                 navigate('/signin');
             } catch (error) {
-                setErrorMessage(error.message);
+                setErrorMessage(error.response?.data?.message || '회원가입에 실패했습니다.');
             }
         } else {
             setErrorMessage('입력된 정보를 확인해주세요.');
@@ -318,8 +319,8 @@ export default function Signup() {
     };
 
     useEffect(() => {
-        setNotAllow(!(emailValid && pwValid && pwMatch && name && gender && birthDate && region && city));
-    }, [emailValid, pwValid, pwMatch, name, gender, birthDate, region, city]);
+        setNotAllow(!(emailValid && pwValid && pwMatch && username && gender && birth_date && region && city));
+    }, [emailValid, pwValid, pwMatch, username, gender, birth_date, region, city]);
 
     return (
         <Page>
@@ -381,8 +382,8 @@ export default function Signup() {
                     <Input 
                         type='text'
                         placeholder="이름을 입력하세요"
-                        value={name}
-                        onChange={handleName}
+                        value={username} // Changed from name to username
+                        onChange={handleUsername} // Changed from handleName to handleUsername
                     />
                 </AdditionalInputWrap>
                 <AdditionalInputTitle>성별</AdditionalInputTitle>
@@ -398,7 +399,7 @@ export default function Signup() {
                     <Input 
                         type='date'
                         placeholder="생년월일을 입력하세요"
-                        value={birthDate}
+                        value={birth_date} // Changed from birthDate to birth_date
                         onChange={handleBirthDate}
                     />
                 </AdditionalInputWrap>
@@ -422,7 +423,7 @@ export default function Signup() {
                 </SelectWrap>
                 <AdditionalInputTitle>선호하는 정당</AdditionalInputTitle>
                 <SelectWrap>
-                    <Select value={party} onChange={handleParty}>
+                    <Select value={preferred_party} onChange={handlePreferredParty}>
                         <option value="">정당을 선택하세요</option>
                         {parties.map((party) => (
                             <option key={party} value={party}>{party}</option>

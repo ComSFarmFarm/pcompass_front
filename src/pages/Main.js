@@ -8,6 +8,15 @@ import { ReactComponent as YesSVG } from '../img/yes.svg';
 import { ReactComponent as NoSVG } from '../img/no.svg';
 import { ReactComponent as NewsSVG } from '../img/news.svg';
 
+// Import party SVG icons
+import { ReactComponent as PartyIcon1 } from '../img/party/1.svg';
+import { ReactComponent as PartyIcon2 } from '../img/party/2.svg';
+import { ReactComponent as PartyIcon3 } from '../img/party/3.svg';
+import { ReactComponent as PartyIcon4 } from '../img/party/4.svg';
+import { ReactComponent as PartyIcon5 } from '../img/party/5.svg';
+import { ReactComponent as PartyIcon6 } from '../img/party/6.svg';
+import { ReactComponent as PartyIcon7 } from '../img/party/7.svg';
+
 const boxData = [
     {
         text: (
@@ -41,16 +50,25 @@ const boxData = [
                김정은 정말 도발할까?
             </>
         ),
-        buttonText: '최신 정치 이슈 보러가기',
+        buttonText: null, // Changed from '최신 정치 이슈 보러가기' to null
         svg: <NewsSVG width={180} height={100} />,
         width: '500px',
         height: '300px',
     },
     {
-        text: '추가 컨테이너 1',
-        buttonText: '버튼 1',
-        width: '900px',
-        height: '300px',
+        text: '궁금한 후보자의 공약을 요약해서 보세요!',
+        icons: [
+            <PartyIcon1 width={150} height={150} />, // Increased size
+            <PartyIcon2 width={150} height={150} />, // Increased size
+            <PartyIcon3 width={150} height={150} />, // Increased size
+            <PartyIcon4 width={150} height={150} />, // Increased size
+            <PartyIcon5 width={150} height={150} />, // Increased size
+            <PartyIcon6 width={150} height={150}/>, // Increased size
+            <PartyIcon7 width={150} height={150}/>, // Increased size
+        ],
+        buttonText: null, // Changed from '공약 보러가기' to null
+        width: '700px',
+        height: '400px',
     },
     {
         text: '추가 컨테이너 2',
@@ -65,7 +83,7 @@ const Main = () => {
 
     const handleButtonClick = (buttonText) => {
         if (buttonText === '받아보기') {
-            navigate('/main');
+            navigate('/First');
         } else {
             alert(`버튼 클릭: ${buttonText}`);
         }
@@ -102,7 +120,22 @@ const Main = () => {
                                 </SvgButton>
                             </ButtonContainer>
                         )}
-                        {data.buttonText && <TestButton onClick={() => handleButtonClick(data.buttonText)}>{data.buttonText}</TestButton>}
+                        {data.buttonText && data.buttonText !== null && (
+                            <TestButton onClick={() => handleButtonClick(data.buttonText)}>
+                                {data.buttonText}
+                            </TestButton>
+                        )}
+                        {data.icons && (
+                            <IconContainerBelowText>
+                                <IconGrid>
+                                    {data.icons.map((icon, idx) => (
+                                        <IconItem key={idx}>
+                                            {icon}
+                                        </IconItem>
+                                    ))}
+                                </IconGrid>
+                            </IconContainerBelowText>
+                        )}
                     </StyledContainer>
                 ))}
             </ContentWrapper>
@@ -140,6 +173,12 @@ const IconContainer = styled.div`
     position: absolute;
     top: 25px;
     right: 15px;
+`;
+
+const IconContainerBelowText = styled.div`
+    margin-top: 20px; /* Space between text and icons */
+    position: relative;
+    z-index: 1;
 `;
 
 const TextContainer = styled.div`
@@ -206,6 +245,19 @@ const SvgButton = styled.div`
     &:hover {
         opacity: 0.8;
     }
+`;
+
+// New styled components for icon grid
+const IconGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+`;
+
+const IconItem = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
 export default Main;

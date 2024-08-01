@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api';
 
@@ -97,7 +97,7 @@ const BottomButton = styled.button`
     color: white;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin: 50px auto 20px auto; /* 버튼의 아래쪽 마진을 조절 */
+    margin: 50px auto 20px auto;
     display: block;
 
     &:disabled {
@@ -116,7 +116,7 @@ const SignupText = styled.div`
     font-size: 16px;
     color: #000000;
     cursor: pointer;
-    margin-top: 10px; /* 텍스트의 위쪽 마진을 조절 */
+    margin-top: 10px;
     margin-bottom: 300px;
 
     &:hover {
@@ -125,18 +125,13 @@ const SignupText = styled.div`
 `;
 
 // React component
-//const User = {
-//    email: 'comsfarmfarm',
-//    pw: 'comsfarm2024!'
-//};
-
 export default function Login() {
     const [email, setEmail] = useState('');
     const [pw, setPw] = useState('');
 
     const [emailValid, setEmailValid] = useState(false);
     const [pwValid, setPwValid] = useState(false);
-    const [notAllow, setNotAllow] = useState(false);
+    const [notAllow, setNotAllow] = useState(true); // 초기 상태를 true로 설정
 
     const navigate = useNavigate();
 
@@ -157,23 +152,18 @@ export default function Login() {
     const onClickConfirmButton = async () => {
         if (emailValid && pwValid) {
             try {
-                await login({ user_id: email, password: pw }); // response 변수 삭제
+                await login({ email, password: pw }); // 필드 이름을 백엔드 요구사항에 맞게 조정
                 navigate('/main'); // 로그인 성공 시 메인 페이지로 이동
             } catch (error) {
-                alert(error.message);
+                alert(error.message); // 에러 메시지 표시
             }
         } else {
             alert('입력된 정보를 확인해주세요.');
         }
     };
-    
 
     useEffect(() => {
-        if (emailValid && pwValid) {
-            setNotAllow(false);
-            return;
-        }
-        setNotAllow(true);
+        setNotAllow(!(emailValid && pwValid)); // 유효성 검사 결과에 따라 버튼 비활성화
     }, [emailValid, pwValid]);
 
     return (

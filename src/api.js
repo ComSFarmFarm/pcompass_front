@@ -1,47 +1,26 @@
+// src/api.js
 import axios from 'axios';
 
-const API_BASE_URL = '/auth';
+const API_BASE_URL = 'http://13.124.10.62:8080/auth'; // 수정된 베이스 URL
 
-const apiRequest = async (method, url, data, headers = {}) => {
+// 로그인 함수
+export const login = async (credentials) => {
     try {
-        const response = await axios({
-            method,
-            url: `${API_BASE_URL}${url}`,
-            data,
-            headers
-        });
+        const response = await axios.post(`${API_BASE_URL}/login`, credentials);
         return response.data;
     } catch (error) {
-        if (error.response) {
-            throw new Error(error.response.data.message);
-        } else {
-            throw new Error('서버와의 연결에 실패했습니다.');
-        }
+        const message = error.response?.data?.message || '로그인에 실패했습니다.';
+        throw new Error(message);
     }
 };
 
-export const signup = async (user) => {
-    return await apiRequest('POST', '/signup', user);
-};
-
-export const login = async (credentials) => {
-    return await apiRequest('POST', '/login', credentials);
-};
-
-export const checkIdExists = async (user_id) => {
-    return await apiRequest('POST', '/idExists', { user_id });
-};
-
-export const checkUsernameExists = async (username) => {
-    return await apiRequest('POST', '/usernameExists', { username });
-};
-
-export const refreshAccessToken = async (refreshToken) => {
-    return await apiRequest('POST', '/refreshToken', { refreshToken });
-};
-
-export const deleteUser = async (accessToken) => {
-    return await apiRequest('DELETE', '/delete', null, {
-        Authorization: accessToken
-    });
+// 회원가입 함수
+export const signup = async (userInfo) => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/signup`, userInfo);
+        return response.data;
+    } catch (error) {
+        const message = error.response?.data?.message || '회원가입에 실패했습니다.';
+        throw new Error(message);
+    }
 };

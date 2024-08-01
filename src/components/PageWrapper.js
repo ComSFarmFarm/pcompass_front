@@ -69,7 +69,7 @@ const PageWrapper = ({ children }) => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        navigate('/signin');
+        navigate('/login');
     };
 
     const handleSignUp = () => {
