@@ -71,10 +71,16 @@ const boxData = [
         height: '400px',
     },
     {
-        text: '추가 컨테이너 2',
-        buttonText: '버튼 2',
+        text: '당신의 후보자를 추천해드립니다.',
+        buttonText: '검색하기',
+        additiontext: (
+            <>
+               *당신이 관심있는 키워드를 입력하면 <br />
+               해당 키워드와 관련된 후보자들을 추천해드립니다.
+            </>
+        ),
         width: '600px',
-        height: '300px',
+        height: '400px',
     },
 ];
 
@@ -121,9 +127,19 @@ const Main = () => {
                             </ButtonContainer>
                         )}
                         {data.buttonText && data.buttonText !== null && (
-                            <TestButton onClick={() => handleButtonClick(data.buttonText)}>
-                                {data.buttonText}
-                            </TestButton>
+                            <ButtonAndSearchContainer>
+                                {data.buttonText === '검색하기' && (
+                                    <>
+                                        <TextWithSearch>
+                                            {data.additiontext}
+                                        </TextWithSearch>
+                                        <SearchBar placeholder="관심있는 키워드를 입력하세요..." />
+                                    </>
+                                )}
+                                <TestButton onClick={() => handleButtonClick(data.buttonText)}>
+                                    {data.buttonText}
+                                </TestButton>
+                            </ButtonAndSearchContainer>
                         )}
                         {data.icons && (
                             <IconContainerBelowText>
@@ -142,6 +158,16 @@ const Main = () => {
         </PageWrapper>
     );
 };
+
+// New styled component for additional text
+const TextWithSearch = styled.p`
+    font-size: 16px;
+    font-weight: 500;
+    color: green;
+    text-align: center;
+    margin-top: 0px;
+    margin-bottom: 30px;
+`;
 
 const ContentWrapper = styled.div`
     display: flex;
@@ -213,8 +239,31 @@ const AdditionalText = styled.p`
     margin: 10px 0;
 `;
 
+const ButtonAndSearchContainer = styled.div`
+    display: flex;
+    flex-direction: column; /* Change to column to stack text and search bar vertically */
+    align-items: center;
+    margin-top: 15px;
+    gap: 17px;
+`;
+
+const SearchBar = styled.input`
+    width: 220px;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 0 10px;
+    font-size: 14px;
+    outline: none;
+    margin-bottom: -10px;
+    
+    &:focus {
+        border-color: #8528d4;
+    }
+`;
+
 const TestButton = styled.button`
-    width: 180px;
+    width: 140px;
     height: 40px;
     border: none;
     font-weight: 700;
@@ -230,6 +279,7 @@ const TestButton = styled.button`
         background-color: #8528d4;
     }
 `;
+
 
 const ButtonContainer = styled.div`
     display: flex;

@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
+import { signup } from '../api'; // api.js에서 signup 함수를 가져옵니다.
 
 // Styled components
 const Page = styled.div`
@@ -43,11 +42,10 @@ const InputTitle = styled.div`
     font-weight: 600;
     color: #000000;
     margin-bottom: 10px;
-    text-align: left;
-    margin-left: 720px;
-    margin-right: auto;
+    text-align: center;  // 중앙 정렬
     width: 100%;
 `;
+
 
 const InputWrap = styled.div`
     display: flex;
@@ -143,15 +141,12 @@ const SigninText = styled.div`
     }
 `;
 
-// Additional styled components
 const AdditionalInputTitle = styled.div`
     font-size: 19px;
     font-weight: 600;
     color: #000000;
     margin-bottom: 10px;
-    text-align: left;
-    margin-left: 720px;
-    margin-right: auto;
+    text-align: center;
     width: 100%;
 `;
 
@@ -189,10 +184,8 @@ const SelectWrap = styled.div`
     }
 `;
 
-// 지역구 목록
 const regions = ["서울", "경기도", "경상북도", "전라남도", "충청북도", "전라북도", "충청남도", "강원도", "인천", "세종", "대전", "광주", "대구", "울산", "부산"];
 
-// 시/군 목록
 const cities = {
     서울: ["강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구", "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구", "성북구", "송파구", "양천구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"],
     경기도: ["수원시", "성남시", "고양시", "용인시", "부천시", "안양시", "오산시", "평택시"],
@@ -211,22 +204,14 @@ const cities = {
     부산: ["강서구", "금정구", "기장군", "남구", "동구", "동래구", "부산진구", "북구", "사상구", "사하구", "서구", "수영구", "연제구", "영도구", "중구", "해운대구"]
 };
 
-// 선호하는 정당 목록
-const parties = ["더불어 민주당", "국민의 힘", "개혁신당", "진보당", "새로운 미래", "사회 민주당", "기본 소득당", "기타"];
+const parties = ["더불어민주당", "국민의힘", "정의당", "국민의당", "기본소득당", "진보당", "녹색당", "미래당"];
 
-// 성별 변환 함수
 const convertGender = (gender) => {
-    switch (gender) {
-        case 'male':
-            return 'M';
-        case 'female':
-            return 'F';
-        default:
-            return '';
-    }
+    if (gender === "male") return "M";
+    if (gender === "female") return "F";
+    return "";
 };
 
-// React component
 export default function Signup() {
     const [email, setEmail] = useState('');
     const [pw, setPw] = useState('');
@@ -237,31 +222,24 @@ export default function Signup() {
     const [region, setRegion] = useState('');
     const [city, setCity] = useState('');
     const [preferred_party, setPreferredParty] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const navigate = useNavigate();
+
     const [emailValid, setEmailValid] = useState(false);
     const [pwValid, setPwValid] = useState(false);
     const [pwMatch, setPwMatch] = useState(false);
     const [notAllow, setNotAllow] = useState(true);
-    const [errorMessage, setErrorMessage] = useState('');
-    const navigate = useNavigate();
 
     const handleEmail = (e) => {
-        const value = e.target.value;
-        const idRegex = /^[a-zA-Z0-9]{4,20}$/;
-        setEmail(value);
-        setEmailValid(idRegex.test(value));
+        setEmail(e.target.value);
     };
 
     const handlePassword = (e) => {
-        const value = e.target.value;
-        const regex = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[$~!@$!%*#^?&()\-_=+])(?!.*[^a-zA-Z0-9$~!@$!%*#^?&()\-_=+]).{8,20}$/;
-        setPw(value);
-        setPwValid(regex.test(value));
+        setPw(e.target.value);
     };
 
     const handlePwConfirm = (e) => {
-        const value = e.target.value;
-        setPwConfirm(value);
-        setPwMatch(value === pw);
+        setPwConfirm(e.target.value);
     };
 
     const handleUsername = (e) => {
@@ -289,16 +267,29 @@ export default function Signup() {
         setPreferredParty(e.target.value);
     };
 
+    useEffect(() => {
+        setEmailValid(email.includes('@') && email.includes('.'));
+        setPwValid(pw.length >= 8 && /[a-zA-Z]/.test(pw) && /[0-9]/.test(pw) && /[^a-zA-Z0-9]/.test(pw));
+        setPwMatch(pw === pwConfirm);
+        setNotAllow(!(emailValid && pwValid && pwMatch && username && gender && birth_date && region && city));
+    }, [email, pw, pwConfirm, username, gender, birth_date, region, city, emailValid, pwValid, pwMatch]);
+
     const formatDate = (date) => {
-        if (!date) return '';
-        const [year, month, day] = date.split('-');
-        return `${year}${month}${day}`;
+        const d = new Date(date);
+        let month = '' + (d.getMonth() + 1);
+        let day = '' + d.getDate();
+        const year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [year, month, day].join('');
     };
 
     const onClickConfirmButton = async () => {
         if (emailValid && pwValid && pwMatch && username && gender && birth_date && region && city) {
             try {
-                const response = await axios.post('http://13.124.10.62:8080/auth/signup', {
+                const userInfo = {
                     user_id: email, 
                     password: pw, 
                     username, // Changed from name to username
@@ -307,20 +298,17 @@ export default function Signup() {
                     region, 
                     city,
                     preferred_party // Add preferred_party preference
-                });
-                console.log(response.data);
+                };
+                const response = await signup(userInfo); // api.js의 signup 함수 호출
+                console.log(response);
                 navigate('/signin');
             } catch (error) {
-                setErrorMessage(error.response?.data?.message || '회원가입에 실패했습니다.');
+                setErrorMessage(error.message);
             }
         } else {
             setErrorMessage('입력된 정보를 확인해주세요.');
         }
     };
-
-    useEffect(() => {
-        setNotAllow(!(emailValid && pwValid && pwMatch && username && gender && birth_date && region && city));
-    }, [emailValid, pwValid, pwMatch, username, gender, birth_date, region, city]);
 
     return (
         <Page>

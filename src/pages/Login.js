@@ -42,9 +42,7 @@ const InputTitle = styled.div`
     font-weight: 600;
     color: #000000;
     margin-bottom: 10px;
-    text-align: left;
-    margin-left: 720px;
-    margin-right: auto;
+    text-align: center;
     width: 100%;
 `;
 
