@@ -78,7 +78,7 @@ const Input = styled.input`
 
 const ErrorMessageWrap = styled.div`
     margin-top: 0px;
-    margin-bottom: 10px;
+    margin-bottom: 50px;
     color: #ef0000;
     font-size: 15px;
     text-align: center;
@@ -95,7 +95,7 @@ const BottomButton = styled.button`
     color: white;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin: 50px auto 20px auto;
+    margin: 0px auto 20px auto;
     display: block;
 
     &:disabled {
@@ -136,21 +136,21 @@ export default function Login() {
     const handleEmail = (e) => {
         const value = e.target.value;
         setEmail(value);
-        const idRegex = /^[a-zA-Z0-9]{4,20}$/;
-        setEmailValid(idRegex.test(value));
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 이메일 형식 정규 표현식
+        setEmailValid(emailRegex.test(value));
     };
 
     const handlePassword = (e) => {
         const value = e.target.value;
         setPw(value);
-        const regex = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&()\-_=+])(?!.*[^a-zA-Z0-9$`~!@$!%*#^?&()\-_=+]).{8,20}$/;
-        setPwValid(regex.test(value));
+        const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&()\-_=+])(?!.*[^a-zA-Z0-9$`~!@$!%*#^?&()\-_=+]).{8,20}$/;
+        setPwValid(passwordRegex.test(value));
     };
 
     const onClickConfirmButton = async () => {
         if (emailValid && pwValid) {
             try {
-                await login({ email, password: pw }); // 필드 이름을 백엔드 요구사항에 맞게 조정
+                await login({ id: email, password: pw }); // 필드 이름을 백엔드 요구사항에 맞게 조정
                 navigate('/main'); // 로그인 성공 시 메인 페이지로 이동
             } catch (error) {
                 alert(error.message); // 에러 메시지 표시
@@ -173,11 +173,11 @@ export default function Login() {
             </TitleWrap>
 
             <ContentWrap>
-                <InputTitle>아이디</InputTitle>
+                <InputTitle>이메일</InputTitle>
                 <InputWrap>
                     <Input 
                         type='text'
-                        placeholder="comsfarmfarm"
+                        placeholder="comsfarmfarm@gmail.com"
                         value={email} 
                         onChange={handleEmail}
                     />
@@ -185,7 +185,7 @@ export default function Login() {
                 <ErrorMessageWrap>
                     {
                         !emailValid && email.length > 0 && (
-                            <div> 올바른 아이디를 입력해주세요 </div>
+                            <div> 올바른 이메일을 입력해주세요 </div>
                         )
                     }
                 </ErrorMessageWrap>

@@ -204,7 +204,7 @@ const cities = {
     부산: ["강서구", "금정구", "기장군", "남구", "동구", "동래구", "부산진구", "북구", "사상구", "사하구", "서구", "수영구", "연제구", "영도구", "중구", "해운대구"]
 };
 
-const parties = ["더불어민주당", "국민의힘", "정의당", "국민의당", "기본소득당", "진보당", "녹색당", "미래당"];
+const parties = ["더불어민주당", "국민의힘", "개혁 신당", "진보당", "새로운 미래", "사회 민주당","기본 소득당", "기타"];
 
 const convertGender = (gender) => {
     if (gender === "male") return "M";
@@ -276,6 +276,7 @@ export default function Signup() {
 
     const formatDate = (date) => {
         const d = new Date(date);
+        console.log(d);
         let month = '' + (d.getMonth() + 1);
         let day = '' + d.getDate();
         const year = d.getFullYear();
@@ -284,7 +285,8 @@ export default function Signup() {
         if (day.length < 2) day = '0' + day;
 
         return [year, month, day].join('');
-    };
+        
+     };
 
     const onClickConfirmButton = async () => {
         if (emailValid && pwValid && pwMatch && username && gender && birth_date && region && city) {
@@ -299,9 +301,10 @@ export default function Signup() {
                     city,
                     preferred_party // Add preferred_party preference
                 };
+                console.log("userInfo : ["+JSON.stringify(userInfo)+"]");
                 const response = await signup(userInfo); // api.js의 signup 함수 호출
                 console.log(response);
-                navigate('/signin');
+                navigate('/login');
             } catch (error) {
                 setErrorMessage(error.message);
             }
@@ -317,11 +320,11 @@ export default function Signup() {
             </TitleWrap>
 
             <ContentWrap>
-                <InputTitle>아이디</InputTitle>
+                <InputTitle>이메일</InputTitle>
                 <InputWrap>
                     <Input 
                         type='text'
-                        placeholder="아이디를 입력하세요"
+                        placeholder="이메일을 입력하세요"
                         value={email} 
                         onChange={handleEmail}
                     />
@@ -329,7 +332,7 @@ export default function Signup() {
                 <ErrorMessageWrap>
                     {
                         !emailValid && email.length > 0 && (
-                            <div>올바른 아이디를 입력해주세요</div>
+                            <div>올바른 이메일을 입력해주세요</div>
                         )
                     }
                 </ErrorMessageWrap>
@@ -429,7 +432,7 @@ export default function Signup() {
                 회원가입
             </BottomButton>
 
-            <SigninText onClick={() => navigate('/signin')}>
+            <SigninText onClick={() => navigate('/login')}>
                 로그인
             </SigninText>
         </Page>
