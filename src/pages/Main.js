@@ -17,6 +17,15 @@ import { ReactComponent as PartyIcon5 } from '../img/party/5.svg';
 import { ReactComponent as PartyIcon6 } from '../img/party/6.svg';
 import { ReactComponent as PartyIcon7 } from '../img/party/7.svg';
 
+// Define paths for each container
+const paths = [
+    '/First',
+    '/Quiz',
+    '/News',
+    '/Promises',
+    '/Search'
+];
+
 const boxData = [
     {
         text: (
@@ -87,6 +96,10 @@ const boxData = [
 const Main = () => {
     const navigate = useNavigate();
 
+    const handleChevronClick = (path) => {
+        navigate(path);
+    };
+
     const handleButtonClick = (buttonText) => {
         if (buttonText === '받아보기') {
             navigate('/First');
@@ -104,7 +117,7 @@ const Main = () => {
                         width={data.width}
                         height={data.height}
                     >
-                        <IconContainer>
+                        <IconContainer onClick={() => handleChevronClick(paths[index])}>
                             <ChevronLeftSVG width={25} height={25} />
                         </IconContainer>
                         <TextContainer>
@@ -199,6 +212,7 @@ const IconContainer = styled.div`
     position: absolute;
     top: 25px;
     right: 15px;
+    cursor: pointer;
 `;
 
 const IconContainerBelowText = styled.div`
@@ -279,7 +293,6 @@ const TestButton = styled.button`
         background-color: #8528d4;
     }
 `;
-
 
 const ButtonContainer = styled.div`
     display: flex;

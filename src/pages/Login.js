@@ -138,7 +138,7 @@ export default function Login() {
     const onClickConfirmButton = async () => {
         if (emailValid && pwValid) {
             try {
-                await login({ id: email, password: pw }); // 필드 이름을 백엔드 요구사항에 맞게 조정
+                await login({ user_id: email, password: pw }); // 필드 이름을 백엔드 요구사항에 맞게 조정
                 navigate('/main'); // 로그인 성공 시 메인 페이지로 이동
             } catch (error) {
                 alert(error.message); // 에러 메시지 표시
