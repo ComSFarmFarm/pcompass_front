@@ -2,22 +2,10 @@ import styled from 'styled-components';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signup } from '../api'; // api.js에서 signup 함수를 가져옵니다.
+import FirstWrapper from '../components/FirstWrapper'
+
 
 // Styled components
-const Page = styled.div`
-    width: 100%;
-    height: 100%;
-    margin: 0 auto;
-    padding: 0;
-    background-color: #F7F7F7;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
-`;
-
 const TitleWrap = styled.div`
     margin-top: 130px;
     font-size: 35px;
@@ -314,7 +302,7 @@ export default function Signup() {
     };
 
     return (
-        <Page>
+        <FirstWrapper>
             <TitleWrap>
                 회원가입
             </TitleWrap>
@@ -435,6 +423,6 @@ export default function Signup() {
             <SigninText onClick={() => navigate('/login')}>
                 로그인
             </SigninText>
-        </Page>
+        </FirstWrapper>
     );
 }

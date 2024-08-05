@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Logo from '../components/Logo'; // Adjust path to your Logo component
 
 const Page = styled.div`
-    background-color: #18181D;
+    background-color: #F7F7F7;
     min-height: 100vh;
     margin: 0;
     color: white;
@@ -20,7 +20,7 @@ const Page = styled.div`
 const Toolbar = styled.div`
     width: 100%;
     height: 70px;
-    background-color: #18181D;
+    background-color: #F7F7F7;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -33,8 +33,8 @@ const Toolbar = styled.div`
 
 const Divider = styled.div`
     width: 100%;
-    height: 1px;
-    background-color: #666;
+    height: 3px;
+    background-color: #EDEDED;
     position: absolute;
     bottom: 0;
     left: 0;
@@ -54,7 +54,7 @@ const TextContainer = styled.div`
 `;
 
 const TextLink = styled.span`
-    color: #fff;
+    color: black;
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
@@ -65,7 +65,7 @@ const TextLink = styled.span`
     }
 `;
 
-const PageWrapper = ({ children }) => {
+const FirstWrapper = ({ children }) => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -83,7 +83,7 @@ const PageWrapper = ({ children }) => {
                     <Logo />
                 </ToolbarText>
                 <TextContainer>
-                    <TextLink onClick={handleLogout}>Logout</TextLink>
+                    <TextLink onClick={handleLogout}>Login</TextLink>
                     <TextLink onClick={handleSignUp}>Sign Up</TextLink>
                 </TextContainer>
                 <Divider />
@@ -93,4 +93,4 @@ const PageWrapper = ({ children }) => {
     );
 };
 
-export default PageWrapper;
+export default FirstWrapper;
