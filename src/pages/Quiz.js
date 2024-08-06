@@ -86,9 +86,10 @@ const ButtonText = styled.div`
 
 const RecommendationText = styled.div`
     color: #fff;
-    font-size: 50px;
+    font-size: 30px;
     font-weight: bold;
-    margin-top: 100px; /* Space from the top */
+    margin-top: 120px; /* Space from the top */
+    margin-bottom:320px;
     text-align: center;
 `;
 
@@ -118,7 +119,7 @@ const Quiz = () => {
                     점수 관리
                 </SmallButton>
                 <SmallButton onClick={handleCustomRecommendations}>
-                    맞춤 정보 추천
+                    포인트 관리
                 </SmallButton>
             </ButtonContainer>
             {!showRecommendation && (
@@ -133,7 +134,13 @@ const Quiz = () => {
             )}
             {showRecommendation && (
                 <RecommendationText>
-                    00를 추천합니다
+                    1등급: ~~
+                    <br />
+                    2등급: ~~
+                    <br />
+                    3등급: ~~
+                    <br />
+                    4등급: ~~
                 </RecommendationText>
             )}
             <StyledButton onClick={handleStartTest}>

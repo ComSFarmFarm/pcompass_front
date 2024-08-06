@@ -108,6 +108,10 @@ const Main = () => {
         }
     };
 
+    const handleIconClick = (index) => {
+        navigate(`/Promises?partyIcon=${index + 1}`);
+    };
+
     return (
         <PageWrapper>
             <ContentWrapper>
@@ -158,7 +162,7 @@ const Main = () => {
                             <IconContainerBelowText>
                                 <IconGrid>
                                     {data.icons.map((icon, idx) => (
-                                        <IconItem key={idx}>
+                                        <IconItem key={idx} onClick={() => handleIconClick(idx)}>
                                             {icon}
                                         </IconItem>
                                     ))}
@@ -321,6 +325,11 @@ const IconItem = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer; /* Make sure icon items are clickable */
+    &:hover {
+        filter: brightness(0.6); /* Darken the icon on hover */
+    }
+    }
 `;
 
 export default Main;
