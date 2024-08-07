@@ -7,9 +7,9 @@ import First from './pages/First';
 import Test from './pages/Test';
 import Main from './pages/Main';
 import Quiz from './pages/Quiz';
+import News from './pages/News';
 import Promises from './pages/Promises';
 import Search from './pages/Search';
-
 
 function App() {
     return (
@@ -22,7 +22,8 @@ function App() {
                 <Route path="/first" element={<First />} />
                 <Route path="/test" element={<Test />} />
                 <Route path="/main" element={<Main />} />    
-                <Route path="/quiz" element={<Quiz />} />         
+                <Route path="/quiz" element={<Quiz />} />  
+                <Route path="/News" element={<News />} />         
                 <Route path="/promises" element={<Promises />} />    
                 <Route path="/search" element={<Search />} />    
             </Routes>

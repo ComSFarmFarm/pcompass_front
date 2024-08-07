@@ -47,7 +47,7 @@ const StyledButton = styled.button`
     text-align: center; /* Center text inside the button */
     box-sizing: border-box; /* Ensure padding is included in width */
     margin: 0px; /* Add margin for spacing */
-    margin-top: 280px;
+    margin-top: 286px;
 
     &:hover {
         background-color: #8528d4;
