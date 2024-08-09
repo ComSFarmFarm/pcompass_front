@@ -93,7 +93,7 @@ const InfoText = styled.div`
 
 const ContentWrapper = styled.div`
     position: relative;
-    margin-top: 130px; /* Adjust to move content further down */
+    margin-top: 160px; /* Adjust to move content further down */
 `;
 
 const WordCloudWrapper = styled.div`
@@ -111,7 +111,7 @@ const IconOverlay = styled.div`
     display: flex;
     justify-content: center;
     pointer-events: none; /* Allows clicks to pass through to the word cloud */
-    margin-top: 250px;
+    margin-top: 280px;
     z-index: 1; /* Lower z-index to ensure it's behind the candidate table */
 `;
 
@@ -120,7 +120,7 @@ const CandidateTable = styled.div`
     display: grid;
     grid-template-columns: repeat(8, 1fr); /* 8 columns */
     grid-template-rows: repeat(2, auto); /* 2 rows */
-    gap: 10px;
+    gap: 15px;
     width: 100%; /* Adjust width to fit content */
     max-width: 900px; /* Ensure the table doesn't exceed this width */
     margin: 0 auto; /* Center align horizontally */
