@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import PageWrapper from '../components/PageWrapper'; // PageWrapper의 올바른 경로
+import Leaderboard from '../components/Leaderboard'; // Leaderboard 컴포넌트 임포트
 
 const InfoText = styled.div`
     color: #fff;
@@ -76,14 +77,6 @@ const ButtonText = styled.div`
     transition: color 0.3s;
 `;
 
-const RecommendationText = styled.div`
-    color: #fff;
-    font-size: 30px;
-    font-weight: bold;
-    margin-top: 120px; /* 상단 여백 */
-    margin-bottom: 320px;
-    text-align: center;
-`;
 
 const GaugeWrapper = styled.div`
     margin: 50px auto;
@@ -132,6 +125,7 @@ const ScoreText = styled.div`
 
 const Quiz = () => {
     const [showRecommendation, setShowRecommendation] = useState(false);
+    const [showLeaderboard, setShowLeaderboard] = useState(false); // 추가된 상태
     const [score, setScore] = useState(0); // 초기 점수를 0으로 설정
     const navigate = useNavigate();
 
@@ -141,10 +135,17 @@ const Quiz = () => {
 
     const handleScoreManagement = () => {
         setShowRecommendation(false);
+        setShowLeaderboard(false); // 점수 관리 클릭 시 순위 표도 숨기기
     };
 
     const handleCustomRecommendations = () => {
         setShowRecommendation(true);
+        setShowLeaderboard(false); // 순위 보기 클릭 시 추천 항목 표시
+    };
+
+    const handleViewLeaderboard = () => {
+        setShowLeaderboard(true); // 순위 보기 버튼 클릭 시 순위 표 표시
+        setShowRecommendation(false); // 추천 항목 숨기기
     };
 
     const current = 335;
@@ -157,9 +158,9 @@ const Quiz = () => {
 
         return () => clearInterval(interval);
     }, []);
-   
+
     const angle = (score / 1000) * 180; // 점수를 각도로 변환 (0에서 180도)
-    const limitedAngle = (score / current) * ((current/1000)*180); // 점수를 각도로 변환 (0에서 36도)
+    const limitedAngle = (score / current) * ((current / 1000) * 180); // 점수를 각도로 변환 (0에서 36도)
 
     const createClipPath = () => {
         const radius = 150;
@@ -172,10 +173,18 @@ const Quiz = () => {
         const startY = centerY + radius * Math.sin((startAngle - 90) * (Math.PI / 180));
         const endX = centerX + radius * Math.cos((endAngle - 90) * (Math.PI / 180));
         const endY = centerY + radius * Math.sin((endAngle - 90) * (Math.PI / 180));
-    
+
         return `M${centerX},${centerY} L${startX},${startY} A${radius},${radius} 0 ${largeArcFlag},1 ${endX},${endY} Z`;
     };
-    
+
+    // 더미 데이터 (실제 데이터는 API 등에서 받아올 수 있습니다.)
+    const leaderboardData = [
+        { name: '홍길동', score: 950 },
+        { name: '이순신', score: 870 },
+        { name: '김유신', score: 800 },
+        { name: '강감찬', score: 730 },
+        // 더 많은 데이터 추가 가능
+    ];
 
     return (
         <PageWrapper>
@@ -186,49 +195,39 @@ const Quiz = () => {
                 <SmallButton onClick={handleScoreManagement}>
                     점수 관리
                 </SmallButton>
-                <SmallButton onClick={handleCustomRecommendations}>
-                    포인트 관리
+                <SmallButton onClick={handleViewLeaderboard}>
+                    순위 보기
                 </SmallButton>
             </ButtonContainer>
-            {!showRecommendation && (
-                
-            <>
-            <CommandText>
-                {current}점
-            </CommandText>
-             <GaugeWrapper>
-                <GaugeBackground>
-                    <GaugeFill viewBox="0 0 300 150">
-                        <defs>
-                            <clipPath id="clip">
-                                <path d={createClipPath()} />
-                            </clipPath>
-                            <linearGradient id="gradient">
-                                <stop offset="0%" stopColor="#ff0000" />
-                                <stop offset="50%" stopColor="#ffff00" />
-                                <stop offset="100%" stopColor="#00ff00" />
-                            </linearGradient>
-                        </defs>
-                        <rect x="0" y="0" width="300" height="150" fill="url(#gradient)" clipPath="url(#clip)" />
-                    </GaugeFill>
-                    <Needle angle={limitedAngle - 90} />
-                </GaugeBackground>
-                <ScoreText>{score} / 1000</ScoreText>
-            </GaugeWrapper>    
-            </>
+            {!showRecommendation && !showLeaderboard && (
+                <>
+                    <CommandText>
+                        {current}점
+                    </CommandText>
+                    <GaugeWrapper>
+                        <GaugeBackground>
+                            <GaugeFill viewBox="0 0 300 150">
+                                <defs>
+                                    <clipPath id="clip">
+                                        <path d={createClipPath()} />
+                                    </clipPath>
+                                    <linearGradient id="gradient">
+                                        <stop offset="0%" stopColor="#ff0000" />
+                                        <stop offset="50%" stopColor="#ffff00" />
+                                        <stop offset="100%" stopColor="#00ff00" />
+                                    </linearGradient>
+                                </defs>
+                                <rect x="0" y="0" width="300" height="150" fill="url(#gradient)" clipPath="url(#clip)" />
+                            </GaugeFill>
+                            <Needle angle={limitedAngle - 90} />
+                        </GaugeBackground>
+                        <ScoreText>{score} / 1000</ScoreText>
+                    </GaugeWrapper>
+                </>
             )}
-            {showRecommendation && (
-                <RecommendationText>
-                    1등급: ~~
-                    <br />
-                    2등급: ~~
-                    <br />
-                    3등급: ~~
-                    <br />
-                    4등급: ~~
-                </RecommendationText>
+            {showLeaderboard && (
+                <Leaderboard data={leaderboardData} />
             )}
-            
             <StyledButton onClick={handleStartTest}>
                 퀴즈 풀기
                 <ButtonText>

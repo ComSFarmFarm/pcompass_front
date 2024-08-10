@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import PageWrapper from '../components/PageWrapper';
-import { fetchNewsTitles } from '../api'; // API 함수 임포트
+import GradientBox from '../components/GradientBox'; // Import GradientBox
+
+import { fetchNewsTitles } from '../api';
 
 import { ReactComponent as ChevronLeftSVG } from '../img/chevron-left.svg';
 import { ReactComponent as RainbowSVG } from '../img/rainbow.svg';
 import { ReactComponent as YesSVG } from '../img/yes.svg';
 import { ReactComponent as NoSVG } from '../img/no.svg';
 
-// Import party SVG icons
 import { ReactComponent as PartyIcon1 } from '../img/party/1.svg';
 import { ReactComponent as PartyIcon2 } from '../img/party/2.svg';
 import { ReactComponent as PartyIcon3 } from '../img/party/3.svg';
@@ -18,7 +19,6 @@ import { ReactComponent as PartyIcon5 } from '../img/party/5.svg';
 import { ReactComponent as PartyIcon6 } from '../img/party/6.svg';
 import { ReactComponent as PartyIcon7 } from '../img/party/7.svg';
 
-// Define paths for each container
 const paths = [
     '/First',
     '/Quiz',
@@ -39,6 +39,7 @@ const boxData = [
         svg: <RainbowSVG width={120} height={107} />,
         width: '500px',
         height: '300px',
+        hasGradientBox: true, // Add a flag to indicate this box has a gradient box
     },
     {
         text: (
@@ -53,9 +54,8 @@ const boxData = [
         width: '500px',
         height: '300px',
     },
-    // 이 부분에서 API에서 받아온 데이터로 대체됩니다.
     {
-        text: null, // 초기 값은 null로 설정
+        text: null,
         buttonText: null,
         svg: null,
         width: '500px',
@@ -64,13 +64,13 @@ const boxData = [
     {
         text: '궁금한 후보자의 공약을 요약해서 보세요!',
         icons: [
-            <PartyIcon1 width={150} height={150} />, // Increased size
-            <PartyIcon2 width={150} height={150} />, // Increased size
-            <PartyIcon3 width={150} height={150} />, // Increased size
-            <PartyIcon4 width={150} height={150} />, // Increased size
-            <PartyIcon5 width={150} height={150} />, // Increased size
-            <PartyIcon6 width={150} height={150}/>, // Increased size
-            <PartyIcon7 width={150} height={150}/>, // Increased size
+            <PartyIcon1 width={150} height={150} />,
+            <PartyIcon2 width={150} height={150} />,
+            <PartyIcon3 width={150} height={150} />,
+            <PartyIcon4 width={150} height={150} />,
+            <PartyIcon5 width={150} height={150} />,
+            <PartyIcon6 width={150} height={150} />,
+            <PartyIcon7 width={150} height={150} />,
         ],
         buttonText: null,
         width: '750px',
@@ -97,9 +97,9 @@ const Main = () => {
     useEffect(() => {
         const fetchAndSetRandomNews = async () => {
             try {
-                const newsData = await fetchNewsTitles(); // API에서 데이터 가져오기
+                const newsData = await fetchNewsTitles();
                 const randomIndex = Math.floor(Math.random() * newsData.length);
-                setRandomNews(newsData[randomIndex]); // 랜덤으로 하나의 뉴스 선택
+                setRandomNews(newsData[randomIndex]);
             } catch (error) {
                 console.error('Failed to fetch news:', error);
             }
@@ -193,6 +193,9 @@ const Main = () => {
                                 </IconGrid>
                             </IconContainerBelowText>
                         )}
+                        {data.hasGradientBox && (
+                            <GradientBox />
+                        )}
                     </StyledContainer>
                 ))}
             </ContentWrapper>
@@ -200,7 +203,6 @@ const Main = () => {
     );
 };
 
-// New styled component for additional text
 const TextWithSearch = styled.p`
     font-size: 16px;
     font-weight: 500;
@@ -244,7 +246,7 @@ const IconContainer = styled.div`
 `;
 
 const IconContainerBelowText = styled.div`
-    margin-top: 20px; /* Space between text and icons */
+    margin-top: 20px;
     position: relative;
     z-index: 1;
 `;
@@ -254,7 +256,7 @@ const TextContainer = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top:15px;
+    margin-top: 15px;
 `;
 
 const SvgContainer = styled.div`
@@ -262,9 +264,9 @@ const SvgContainer = styled.div`
     margin-bottom: 10px;
     border-radius: 20px;
     overflow: hidden;
-        width: fit-content;
+    width: fit-content;
     height: fit-content;
-    cursor: pointer; /* Add cursor pointer to indicate clickable */
+    cursor: pointer;
 `;
 
 const PromoText = styled.p`
@@ -272,13 +274,13 @@ const PromoText = styled.p`
     font-weight: 600;
     color: white;
     text-align: center;
-    margin: 10px 50px;  /* 양옆에 마진 추가 */
-    line-height: 1.4;  /* 줄 간격 조절 */
-    overflow-wrap: break-word;  /* 긴 단어를 다음 줄로 넘어가게 함 */
+    margin: 10px 50px;
+    line-height: 1.4;
+    overflow-wrap: break-word;
     word-wrap: break-word;
-    word-break: break-word;  /* 줄 바꿈 관련 속성 */
-    white-space: normal;  /* 문장이 길 경우 다음 줄로 넘어가게 설정 */
-    cursor: pointer; /* Add cursor pointer to indicate clickable */
+    word-break: break-word;
+    white-space: normal;
+    cursor: pointer;
 `;
 
 const AdditionalText = styled.p`
@@ -357,9 +359,8 @@ const IconItem = styled.div`
     justify-content: center;
     cursor: pointer;
     &:hover {
-        filter: brightness(0.6); 
+        filter: brightness(0.6);
     }
 `;
 
 export default Main;
-

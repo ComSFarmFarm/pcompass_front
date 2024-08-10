@@ -1,8 +1,8 @@
-// test.js
 import React from 'react';
 import PageWrapper from '../components/PageWrapper'; // Adjust path to your PageWrapper component
 import styled from 'styled-components';
-import Rainbow from '../components/Rainbow'; // Adjust path to your Rainbow component
+import GradientBox from '../components/GradientBox'; // GradientBox 컴포넌트 임포트
+import { useNavigate } from 'react-router-dom';
 
 const InfoText = styled.div`
     color: #fff;
@@ -49,13 +49,30 @@ const NextButton = styled.button`
     }
 `;
 
+const GradientBoxWrapper = styled.div`
+    height: 200px; /* 원하는 높이로 조정 */
+    width: 100%; /* 부모 너비에 맞춤 */
+    display: flex;
+    justify-content: center;
+    margin-top: 70px;
+    margin-bottom: -100px;
+`;
+
 const Test = () => {
+    const navigate = useNavigate();
+
+    const handleStartTest = () => {
+        navigate('/result');
+    };
+
     return (
         <PageWrapper>
             <InfoText>
                 폴스널 컬러테스트란?
             </InfoText>
-            <Rainbow />
+            <GradientBoxWrapper>
+                <GradientBox />
+            </GradientBoxWrapper>
             <TestText>
                 MBTI와 같은 방식으로 나만의 정치색을 만들어 봐요!
             </TestText>
@@ -66,7 +83,7 @@ const Test = () => {
                 즉 Politics-personal color 를 볼 수 있습니다.<br /><br />
                 '나의 정치색'을 확인해보세요!
             </AdditionalText>
-            <NextButton>다음</NextButton>
+            <NextButton onClick={handleStartTest}>다음</NextButton>
         </PageWrapper>
     );
 };

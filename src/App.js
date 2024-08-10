@@ -10,6 +10,8 @@ import Quiz from './pages/Quiz';
 import News from './pages/News';
 import Promises from './pages/Promises';
 import Search from './pages/Search';
+import Result from './pages/Result';
+
 
 function App() {
     return (
@@ -26,6 +28,7 @@ function App() {
                 <Route path="/News" element={<News />} />         
                 <Route path="/promises" element={<Promises />} />    
                 <Route path="/search" element={<Search />} />    
+                <Route path="/result" element={<Result />} />  
             </Routes>
         </Router>
     );
