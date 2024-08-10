@@ -56,7 +56,7 @@ const ButtonText = styled.div`
 
 const GradientBoxWrapper = styled.div`
     height: 200px; /* 원하는 높이로 조정 */
-    width: 100%; /* 부모 너비에 맞춤 */
+    width: 30%; /* 부모 너비에 맞춤 */
     display: flex;
     justify-content: center;
     align-items: center; /* 내용 중앙 정렬 */

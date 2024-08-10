@@ -2,7 +2,6 @@ import React from 'react';
 import PageWrapper from '../components/PageWrapper'; // Adjust path to your PageWrapper component
 import styled from 'styled-components';
 import GradientBox from '../components/GradientBox2'; // GradientBox 컴포넌트 임포트
-import { useNavigate } from 'react-router-dom';
 
 const InfoText = styled.div`
     color: #fff;
@@ -108,13 +107,7 @@ const ColorCircle = styled.div`
     border: 4px solid white; /* 흰색 테두리 추가 */
 `;
 
-const Result = () => {
-    const navigate = useNavigate();
-
-    const handleStartTest = () => {
-        navigate('/propile'); // 잘못된 페이지 경로를 /propile로 이동
-    };
-
+const Propile = () => {
     const score = 40; // 예시 점수 (40점으로 설정)
 
     const percent = getPercent(score);
@@ -149,9 +142,9 @@ const Result = () => {
                     <span style={{ color: colorCode, fontSize: '24px' }}>{colorCode}</span>
                 </AdditionalText>
             </ColorInfoContainer>
-            <NextButton onClick={handleStartTest}>프로필 생성하기</NextButton>
+            <NextButton>프로필 생성하기</NextButton>
         </PageWrapper>
     );
 };
 
-export default Result;
+export default Propile;

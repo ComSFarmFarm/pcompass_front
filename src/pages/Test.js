@@ -51,7 +51,7 @@ const NextButton = styled.button`
 
 const GradientBoxWrapper = styled.div`
     height: 200px; /* 원하는 높이로 조정 */
-    width: 100%; /* 부모 너비에 맞춤 */
+    width: 35%; /* 부모 너비에 맞춤 */
     display: flex;
     justify-content: center;
     margin-top: 70px;
