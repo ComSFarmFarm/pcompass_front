@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import PageWrapper from '../components/PageWrapper';
+import { fetchNewsTitles } from '../api'; // API 함수 임포트
+
 import { ReactComponent as ChevronLeftSVG } from '../img/chevron-left.svg';
 import { ReactComponent as RainbowSVG } from '../img/rainbow.svg';
 import { ReactComponent as YesSVG } from '../img/yes.svg';
 import { ReactComponent as NoSVG } from '../img/no.svg';
-import { ReactComponent as NewsSVG } from '../img/news.svg';
 
 // Import party SVG icons
 import { ReactComponent as PartyIcon1 } from '../img/party/1.svg';
@@ -52,15 +53,11 @@ const boxData = [
         width: '500px',
         height: '300px',
     },
+    // 이 부분에서 API에서 받아온 데이터로 대체됩니다.
     {
-        text: (
-            <>
-               [2024년 북한] 한반도 전쟁위기...<br />
-               김정은 정말 도발할까?
-            </>
-        ),
-        buttonText: null, // Changed from '최신 정치 이슈 보러가기' to null
-        svg: <NewsSVG width={180} height={100} />,
+        text: null, // 초기 값은 null로 설정
+        buttonText: null,
+        svg: null,
         width: '500px',
         height: '300px',
     },
@@ -75,8 +72,8 @@ const boxData = [
             <PartyIcon6 width={150} height={150}/>, // Increased size
             <PartyIcon7 width={150} height={150}/>, // Increased size
         ],
-        buttonText: null, // Changed from '공약 보러가기' to null
-        width: '700px',
+        buttonText: null,
+        width: '750px',
         height: '400px',
     },
     {
@@ -95,6 +92,21 @@ const boxData = [
 
 const Main = () => {
     const navigate = useNavigate();
+    const [randomNews, setRandomNews] = useState(null);
+
+    useEffect(() => {
+        const fetchAndSetRandomNews = async () => {
+            try {
+                const newsData = await fetchNewsTitles(); // API에서 데이터 가져오기
+                const randomIndex = Math.floor(Math.random() * newsData.length);
+                setRandomNews(newsData[randomIndex]); // 랜덤으로 하나의 뉴스 선택
+            } catch (error) {
+                console.error('Failed to fetch news:', error);
+            }
+        };
+
+        fetchAndSetRandomNews();
+    }, []);
 
     const handleChevronClick = (path) => {
         navigate(path);
@@ -112,6 +124,10 @@ const Main = () => {
         navigate(`/Promises?partyIcon=${index + 1}`);
     };
 
+    const handleNewsClick = (url) => {
+        window.location.href = url;
+    };
+
     return (
         <PageWrapper>
             <ContentWrapper>
@@ -125,12 +141,20 @@ const Main = () => {
                             <ChevronLeftSVG width={25} height={25} />
                         </IconContainer>
                         <TextContainer>
-                            <PromoText>{data.text}</PromoText>
+                            <PromoText onClick={() => index === 2 && randomNews ? handleNewsClick(randomNews.url) : null}>
+                                {index === 2 && randomNews ? randomNews.title : data.text}
+                            </PromoText>
                             {data.additionalText && <AdditionalText>{data.additionalText}</AdditionalText>}
                         </TextContainer>
-                        {data.svg && (
-                            <SvgContainer>
-                                {data.svg}
+                        {index === 2 && randomNews && (
+                            <SvgContainer onClick={() => handleNewsClick(randomNews.url)}>
+                                <img
+                                    src={randomNews.imageUrl || `https://via.placeholder.com/150?text=No+Image`}
+                                    alt="News"
+                                    width={200}
+                                    height={120}
+                                    style={{ borderRadius: '20px' }}
+                                />
                             </SvgContainer>
                         )}
                         {index === 1 && (
@@ -230,15 +254,17 @@ const TextContainer = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin-top:15px;
 `;
 
 const SvgContainer = styled.div`
     margin-top: 15px;
     margin-bottom: 10px;
-    border-radius: 20px; /* Adjust the border-radius as needed */
-    overflow: hidden; /* Ensures that the rounded corners are applied to the SVG */
-    width: fit-content; /* Adjusts width to fit the SVG content */
-    height: fit-content; /* Adjusts height to fit the SVG content */
+    border-radius: 20px;
+    overflow: hidden;
+        width: fit-content;
+    height: fit-content;
+    cursor: pointer; /* Add cursor pointer to indicate clickable */
 `;
 
 const PromoText = styled.p`
@@ -246,8 +272,13 @@ const PromoText = styled.p`
     font-weight: 600;
     color: white;
     text-align: center;
-    margin-top: 20px;
-    margin-bottom: 0px;
+    margin: 10px 50px;  /* 양옆에 마진 추가 */
+    line-height: 1.4;  /* 줄 간격 조절 */
+    overflow-wrap: break-word;  /* 긴 단어를 다음 줄로 넘어가게 함 */
+    word-wrap: break-word;
+    word-break: break-word;  /* 줄 바꿈 관련 속성 */
+    white-space: normal;  /* 문장이 길 경우 다음 줄로 넘어가게 설정 */
+    cursor: pointer; /* Add cursor pointer to indicate clickable */
 `;
 
 const AdditionalText = styled.p`
@@ -259,7 +290,7 @@ const AdditionalText = styled.p`
 
 const ButtonAndSearchContainer = styled.div`
     display: flex;
-    flex-direction: column; /* Change to column to stack text and search bar vertically */
+    flex-direction: column;
     align-items: center;
     margin-top: 15px;
     gap: 17px;
@@ -314,7 +345,6 @@ const SvgButton = styled.div`
     }
 `;
 
-// New styled components for icon grid
 const IconGrid = styled.div`
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -325,11 +355,11 @@ const IconItem = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer; /* Make sure icon items are clickable */
+    cursor: pointer;
     &:hover {
-        filter: brightness(0.6); /* Darken the icon on hover */
-    }
+        filter: brightness(0.6); 
     }
 `;
 
 export default Main;
+

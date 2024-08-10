@@ -1,8 +1,7 @@
-// src/pages/Main.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import PageWrapper from '../components/PageWrapper'; // Correct path to PageWrapper
-import newsImage from '../img/news.svg'; // Import the image
+import { fetchNewsTitles } from '../api'; // API 함수 임포트
 
 const InfoText = styled.div`
     color: #fff;
@@ -13,7 +12,7 @@ const InfoText = styled.div`
 `;
 
 const Container = styled.div`
-    width: 60%;
+    width: 70%;
     height: 200px;
     background-color: black;
     margin: 30px 0;
@@ -22,6 +21,10 @@ const Container = styled.div`
     border-radius: 20px;
     overflow: hidden; /* To ensure the border radius is applied to the image as well */
     color: #fff;
+    cursor: pointer; /* 클릭 가능한 컨테이너로 표시 */
+    &:hover {
+        background-color: #333; /* 마우스 오버 시 배경색 변화 */
+    }
 `;
 
 const ImageWrapper = styled.div`
@@ -40,7 +43,7 @@ const ImageWrapper = styled.div`
 
 const Content = styled.div`
     width: 70%;
-    padding: 20px;
+    padding: 15px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -48,42 +51,62 @@ const Content = styled.div`
 
 const Headline = styled.h2`
     font-size: 24px;
-    margin: 0 0 10px 0;
+    margin: 10px 40px 10px 40px;
 `;
 
 const Description = styled.p`
     font-size: 16px;
-    margin: 15px 40px 10px 40px;
+    margin: 10px 50px 10px 40px;
 `;
 
 const News = () => {
-    const containers = Array.from({ length: 10 }, (_, index) => (
-        <Container key={index}>
-            <ImageWrapper>
-                <img 
-                    src={index === 0 ? newsImage : `https://via.placeholder.com/150?text=Image+${index + 1}`} 
-                    alt={index === 0 ? 'News Image' : `Image ${index + 1}`} 
-                />
-            </ImageWrapper>
-            <Content>
-                <Headline>
-                    {index === 0 ? '[2024년 북한] 한반도 전쟁위기...김정은 정말 도발할까?' : `기사 헤드라인 ${index + 1}`}
-                </Headline>
-                <Description>
-                    {index === 0
-                        ? '김정은 북한 국무위원장은 지난해 연말 전원회의에서 "대한민국 것들과는 통일이 성사될 수 없다"며 유사시 핵무기 공격도 불사할 것이라고 위협했다. 출처 : 시사주간(http://www.sisaweekly.com)'
-                        : `이것은 기사 ${index + 1}의 설명입니다. 최신 정치 이슈에 대한 간략한 설명을 여기에 표시합니다.`}
-                </Description>
-            </Content>
-        </Container>
-    ));
+    const [newsData, setNewsData] = useState([]);
+
+    useEffect(() => {
+        const fetchNews = async () => {
+            try {
+                const data = await fetchNewsTitles(); // API에서 데이터 가져오기
+                setNewsData(data);
+            } catch (error) {
+                console.error('Failed to fetch news:', error);
+            }
+        };
+
+        fetchNews();
+    }, []);
+
+    const handleContainerClick = (url) => {
+        if (url) {
+            window.location.href = url; // 해당 URL로 이동
+        }
+    };
 
     return (
         <PageWrapper>
             <InfoText>
                 최신 정치 이슈
             </InfoText>
-            {containers}
+            {newsData.map((news, index) => (
+                <Container 
+                    key={index} 
+                    onClick={() => handleContainerClick(news.url)} // 클릭 이벤트 추가
+                >
+                    <ImageWrapper>
+                        <img 
+                            src={news.imageUrl || `https://via.placeholder.com/150?text=No+Image`} 
+                            alt={`News Image ${index + 1}`} 
+                        />
+                    </ImageWrapper>
+                    <Content>
+                        <Headline>
+                            {news.title}
+                        </Headline>
+                        <Description>
+                            {news.text}
+                        </Description>
+                    </Content>
+                </Container>
+            ))}
         </PageWrapper>
     );
 };
