@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import PageWrapper from '../components/PageWrapper';
 import { fetchQuizQuestion, submitQuizAnswer } from '../api';
 
+
 // 스타일 컴포넌트
 const Wrapper = styled.div`
     display: flex;
@@ -107,7 +108,7 @@ const Overlay = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7);
     z-index: 10;
 `;
 
@@ -116,10 +117,11 @@ const OverlayText = styled.div`
     font-size: 30px;
     font-weight: bold;
     padding: 20px;
-    background-color: rgba(0, 0, 0, 0.7);
     border-radius: 10px;
     text-align: center;
+    white-space: pre-line; /* 줄바꿈을 지원 */
 `;
+
 
 const Polquiz = () => {
     const [question, setQuestion] = useState('');
@@ -165,13 +167,14 @@ const Polquiz = () => {
         try {
             const response = await submitQuizAnswer(questionId, answer, userId);
             const newMessage = response.newScore !== null 
-                ? `${response.message} 현재 점수: ${response.newScore}`
+                ? `${response.message}\n현재 점수: ${response.newScore}`
                 : response.message;
             setMessage(newMessage);
         } catch (error) {
             setMessage(error.message);
         }
     };
+    
 
     return (
         <PageWrapper>
