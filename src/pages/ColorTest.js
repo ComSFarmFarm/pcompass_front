@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { FaCheck } from 'react-icons/fa'; // 체크 아이콘 추가
+import PageWrapper from '../components/PageWrapper';
 
 // 스타일 컴포넌트
 const Container = styled.div`
@@ -34,14 +35,16 @@ const QuestionTitle = styled.h2`
 
 const OptionContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between; /* 동의와 비동의를 양쪽으로 배치 */
   align-items: center;
   width: 100%;
+  margin-top: 50px;
+  margin-bottom: 20px;
 `;
 
 const Option = styled.div`
   display: inline-block;
-  margin: 20px;
+  margin: 0 10px;
   position: relative;
 `;
 
@@ -91,7 +94,7 @@ const ButtonContainer = styled.div`
   justify-content: flex-end; /* 버튼들을 오른쪽으로 정렬합니다 */
   margin-left: 370px;
   margin-top: 200px;
-  margin-bottom: 500px;
+  margin-bottom: 180px;
   width: 100%;
   max-width: 1000px;
   gap: 800px; /* 버튼들 사이의 간격을 조절합니다 */
@@ -117,6 +120,19 @@ const NextButton = styled(Button)`
   /* 필요에 따라 추가적인 스타일 조정 가능 */
 `;
 
+const ErrorMessage = styled.div`
+  color: red;
+  font-size: 20px;
+  text-align: center;
+  margin-top: 60px;
+`;
+
+const Text = styled.span`
+  font-size: 16px;
+  color: #555;
+  font-weight: 600;
+`;
+
 const ColorTest = () => {
   const questions = [
     { question: '1. 정부는 경제 활동에 적극 개입하여 불평등을 줄여야 한다고 생각하십니까?', options: ['1', '2', '3', '4', '5'] },
@@ -140,10 +156,10 @@ const ColorTest = () => {
     { question: '19. 공공 의료 서비스를 확대해야 한다고 생각하십니까?', options: ['1', '2', '3', '4', '5'] },
     { question: '20. 검찰의 권한을 확대해야 한다고 생각하십니까?', options: ['5', '4', '3', '2', '1'] }
   ];
-
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(0);
   const [answers, setAnswers] = useState(Array(questions.length).fill(null));
+  const [errorMessage, setErrorMessage] = useState(""); // 에러 메시지 상태 추가
   const questionRefs = useRef([]);
 
   const questionsPerPage = 5;
@@ -160,6 +176,7 @@ const ColorTest = () => {
     const newAnswers = [...answers];
     newAnswers[questionIndex] = value;
     setAnswers(newAnswers);
+    setErrorMessage(""); // 옵션 선택 시 에러 메시지 초기화
   };
 
   const handleNext = () => {
@@ -177,7 +194,10 @@ const ColorTest = () => {
   };
 
   const handleSubmit = () => {
-    // Calculate score
+    if (answers.includes(null)) {
+      setErrorMessage("*모든 문항을 선택하셔야 제출하실 수 있습니다.");
+      return;
+    }
     const score = answers.reduce((acc, answer) => acc + Number(answer), 0);
     navigate('/result', { state: { score } }); // 'result' 페이지로 라우팅하며 상태를 전달
   };
@@ -185,48 +205,53 @@ const ColorTest = () => {
   const isLastPage = currentPage === Math.ceil(questions.length / questionsPerPage) - 1;
 
   return (
-    <Container>
-      <Title>폴스널컬러 테스트</Title>
-      <QuestionContainer>
-        {currentQuestions.map((q, index) => (
-          <QuestionBlock key={index} ref={el => (questionRefs.current[startIndex + index] = el)}>
-            <QuestionTitle>{q.question}</QuestionTitle>
-            <OptionContainer>
-              {q.options.map((opt, optIndex) => (
-                <Option key={optIndex}>
-                  <OptionLabel
-                    isSelected={answers[startIndex + index] === opt}
-                    isGray={optIndex === 2} // 세 번째 동그라미는 회색으로 설정
-                    size={
-                      optIndex === 0 || optIndex === 4 ? '60px' : // 0번째와 4번째는 60px
-                      optIndex === 1 || optIndex === 3 ? '50px' : // 1번째와 3번째는 50px
-                      optIndex === 2 ? '40px' : '50px' // 2번째는 40px, 나머지는 50px
-                    }
-                  >
-                    <HiddenRadio
-                      name={`question-${startIndex + index}`}
-                      value={opt}
-                      checked={answers[startIndex + index] === opt}
-                      onChange={() => handleOptionChange(startIndex + index, opt)}
-                    />
-                    {answers[startIndex + index] === opt && <CheckMark />}
-                    {opt}
-                  </OptionLabel>
-                </Option>
-              ))}
-            </OptionContainer>
-          </QuestionBlock>
-        ))}
-      </QuestionContainer>
-      <ButtonContainer>
-        <BackButton onClick={handleBack}>뒤로</BackButton>
-        {isLastPage ? (
-          <Button onClick={handleSubmit}>제출</Button>
-        ) : (
-          <NextButton onClick={handleNext}>다음</NextButton>
-        )}
-      </ButtonContainer>
-    </Container>
+    <PageWrapper>
+      <Container>
+        <Title>폴스널컬러 테스트</Title>
+        <QuestionContainer>
+          {currentQuestions.map((q, index) => (
+            <QuestionBlock key={index} ref={el => (questionRefs.current[startIndex + index] = el)}>
+              <QuestionTitle>{q.question}</QuestionTitle>
+              <OptionContainer>
+                <Text>동의</Text>
+                {q.options.map((opt, optIndex) => (
+                  <Option key={optIndex}>
+                    <OptionLabel
+                      isSelected={answers[startIndex + index] === opt}
+                      isGray={optIndex === 2} // 세 번째 동그라미는 회색으로 설정
+                      size={
+                        optIndex === 0 || optIndex === 4 ? '60px' : // 0번째와 4번째는 60px
+                        optIndex === 1 || optIndex === 3 ? '50px' : // 1번째와 3번째는 50px
+                        optIndex === 2 ? '40px' : '50px' // 2번째는 40px, 나머지는 50px
+                      }
+                    >
+                      <HiddenRadio
+                        name={`question-${startIndex + index}`}
+                        value={opt}
+                        checked={answers[startIndex + index] === opt}
+                        onChange={() => handleOptionChange(startIndex + index, opt)}
+                      />
+                      {answers[startIndex + index] === opt && <CheckMark />}
+                      {opt}
+                    </OptionLabel>
+                  </Option>
+                ))}
+                <Text>비동의</Text>
+              </OptionContainer>
+            </QuestionBlock>
+          ))}
+        </QuestionContainer>
+        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+        <ButtonContainer>
+          <BackButton onClick={handleBack}>뒤로</BackButton>
+          {isLastPage ? (
+            <Button onClick={handleSubmit}>제출</Button>
+          ) : (
+            <NextButton onClick={handleNext}>다음</NextButton>
+          )}
+        </ButtonContainer>
+      </Container>
+    </PageWrapper>
   );
 };
 

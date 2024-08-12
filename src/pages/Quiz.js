@@ -130,7 +130,7 @@ const Quiz = () => {
     const navigate = useNavigate();
 
     const handleStartTest = () => {
-        navigate('/test');
+        navigate('/polquiz');
     };
 
     const handleScoreManagement = () => {

@@ -12,6 +12,7 @@ import Promises from './pages/Promises';
 import Search from './pages/Search';
 import Result from './pages/Result';
 import ColorTest from './pages/ColorTest';
+import Polquiz from './pages/Polquiz';
 
 function App() {
     return (
@@ -30,6 +31,7 @@ function App() {
                 <Route path="/search" element={<Search />} />    
                 <Route path="/result" element={<Result />} />  
                 <Route path="/colortest" element={<ColorTest />} /> 
+                <Route path="/polquiz" element={<Polquiz />} /> 
             </Routes>
         </Router>
     );
