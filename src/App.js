@@ -11,7 +11,7 @@ import News from './pages/News';
 import Promises from './pages/Promises';
 import Search from './pages/Search';
 import Result from './pages/Result';
-
+import ColorTest from './pages/ColorTest';
 
 function App() {
     return (
@@ -29,6 +29,7 @@ function App() {
                 <Route path="/promises" element={<Promises />} />    
                 <Route path="/search" element={<Search />} />    
                 <Route path="/result" element={<Result />} />  
+                <Route path="/colortest" element={<ColorTest />} /> 
             </Routes>
         </Router>
     );

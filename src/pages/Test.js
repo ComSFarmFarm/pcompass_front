@@ -62,7 +62,7 @@ const Test = () => {
     const navigate = useNavigate();
 
     const handleStartTest = () => {
-        navigate('/result');
+        navigate('/colortest');
     };
 
     return (

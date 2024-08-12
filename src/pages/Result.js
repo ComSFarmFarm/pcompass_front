@@ -1,8 +1,8 @@
 import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import PageWrapper from '../components/PageWrapper'; // Adjust path to your PageWrapper component
 import styled from 'styled-components';
 import GradientBox from '../components/GradientBox2'; // GradientBox 컴포넌트 임포트
-import { useNavigate } from 'react-router-dom';
 
 const InfoText = styled.div`
     color: #fff;
@@ -22,7 +22,7 @@ const TestText = styled.div`
 
 const AdditionalText = styled.div`
     color: white;
-    font-size: 25px;
+    font-size: 30px;
     font-weight: bold;
     line-height: 1.5;
     margin-top: 30px;
@@ -40,7 +40,7 @@ const NextButton = styled.button`
     cursor: pointer;
     margin-bottom: 100px;
     transition: background-color 0.3s;
-    margin-top: 80px;
+    margin-top: 50px;
 
     &:hover {
         background-color: #673ab7;
@@ -84,7 +84,7 @@ const GradientBoxWrapper = styled.div`
     display: flex;
     justify-content: center;
     margin-top: 70px;
-    margin-bottom: -100px;
+    margin-bottom: -140px;
 `;
 
 const ColorInfoContainer = styled.div`
@@ -109,20 +109,22 @@ const ColorCircle = styled.div`
 `;
 
 const Result = () => {
+    const location = useLocation();
     const navigate = useNavigate();
+    
+    // state에서 score 값 가져오기
+    const score = location.state?.score || 0;
 
     const handleStartTest = () => {
-        navigate('/propile'); // 잘못된 페이지 경로를 /propile로 이동
+        navigate('/profile'); // 프로필 생성 페이지로 이동
     };
-
-    const score = 40; // 예시 점수 (40점으로 설정)
 
     const percent = getPercent(score);
     const colorCode = interpolateColor(score);
 
     let testText;
     if (score === 60) {
-        testText = "당신은 진보/보수 성향이 각각 50%입니다";
+        testText = "당신은 진보/보수 성향이 정확히 50%입니다";
     } else if (score < 60) {
         testText = `당신은 보수 성향이 ${100 - percent}% 입니다`;
     } else {

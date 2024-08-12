@@ -94,7 +94,7 @@ const News = () => {
                     <ImageWrapper>
                         <img 
                             src={news.imageUrl || `https://via.placeholder.com/150?text=No+Image`} 
-                            alt={`News Image ${index + 1}`} 
+                            alt={`News ${index + 1}`} // "Image"를 제거한 alt 속성
                         />
                     </ImageWrapper>
                     <Content>
