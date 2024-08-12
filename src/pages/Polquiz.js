@@ -1,89 +1,216 @@
-import React from 'react';
-import PageWrapper from '../components/PageWrapper'; // Adjust path to your PageWrapper component
-import styled from 'styled-components';
-import GradientBox from '../components/GradientBox'; // GradientBox 컴포넌트 임포트
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import PageWrapper from '../components/PageWrapper';
+import { fetchQuizQuestion, submitQuizAnswer } from '../api';
+
+// 스타일 컴포넌트
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 100px auto;
+    position: relative;
+`;
+
+const Header = styled.div`
+    font-size: 44px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 0px;
+    margin-top: 100px;
+`;
+
+const OuterFrame = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(30, 30, 30, 0.8);
+    padding: 40px;
+    border-radius: 17px;
+    max-width: 800px;
+    border: 5px solid #6a0dad;
+    position: relative;
+    filter: ${({ blur }) => (blur ? 'blur(4px)' : 'none')};
+    transition: filter 0.3s ease;
+`;
+
+const Title = styled.div`
+    position: absolute;
+    top: -30px;
+    left: 20px;
+    background-color: rgba(30, 30, 30, 0.8);
+    color: #6a0dad;
+    font-size: 32px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+`;
 
 const InfoText = styled.div`
-    color: #fff;
-    font-size: 40px;
-    font-weight: bold;
-    margin-top: 100px;
-    margin-bottom: 0px;
-`;
-
-const TestText = styled.div`
-    color: #8459FF;
-    font-size: 24px;
-    font-weight: bold;
-    margin-top: 50px;
-`;
-
-const AdditionalText = styled.div`
-    color: #fff;
-    font-size: 20px;
-    margin-top: 40px;
-    line-height: 1.5;
-    margin-bottom: 50px;
-`;
-
-const NextButton = styled.button`
-    background-color: #8459FF;
     color: white;
-    font-size: 24px;
+    font-size: 25px;
     font-weight: bold;
-    padding: 20px 200px;
-    border: none;
-    border-radius: 5px;
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 40px;
+`;
+
+const ButtonContainer = styled.div`
+    display: flex;
+    margin-top: 50px;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 700px;
+    gap: 20px;
+`;
+
+const Button = styled.button`
+    padding: 20px 40px;
+    font-size: 25px;
+    font-weight: bold;
     cursor: pointer;
-    margin-bottom: 0px;
-    transition: background-color 0.3s;
-    margin-top: 120px;
-
+    border: none;
+    border-radius: 12px;
+    background-color: #6a0dad;
+    color: white;
+    transition: background-color 0.3s, transform 0.3s;
+    width: 100%;
+    max-width: 320px;
+    height: 120px;
+    
     &:hover {
-        background-color: #673ab7;
-    }
-
-    &:active {
-        background-color: #512da8;
+        background-color: #5c00b4;
+        transform: scale(1.05);
     }
 `;
 
-const GradientBoxWrapper = styled.div`
-    height: 200px; /* 원하는 높이로 조정 */
-    width: 35%; /* 부모 너비에 맞춤 */
+const StarContainer = styled.div`
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+`;
+
+const Star = styled.div`
+    font-size: 30px;
+    color: ${({ filled }) => (filled ? 'yellow' : 'gray')};
+`;
+
+const Overlay = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
-    margin-top: 70px;
-    margin-bottom: -100px;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+`;
+
+const OverlayText = styled.div`
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    text-align: center;
 `;
 
 const Polquiz = () => {
+    const [question, setQuestion] = useState('');
+    const [options, setOptions] = useState({});
+    const [selectedOption, setSelectedOption] = useState('');
+    const [message, setMessage] = useState('');
+    const [score, setScore] = useState(0);
+    const [questionId, setQuestionId] = useState(null);
+    const [level, setLevel] = useState(0);
+    const [userId] = useState('yjin@goatfarm.ai'); // 정적으로 설정된 userId
+    const [blur, setBlur] = useState(false);
     const navigate = useNavigate();
 
-    const handleStartTest = () => {
-        navigate('/colortest');
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await fetchQuizQuestion();
+                setQuestion(data.question);
+                setOptions(data.options);
+                setQuestionId(data.questionId);
+                setLevel(data.level);
+            } catch (error) {
+                console.error('Failed to fetch data', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        if (message) {
+            setBlur(true);
+            const timer = setTimeout(() => {
+                setBlur(false);
+                setMessage(''); // message와 blur를 동시에 제거
+            }, 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [message]);
+
+    const handleOptionClick = async (answer) => {
+        setSelectedOption(answer);
+        if (questionId === null) {
+            setMessage('질문 ID를 찾을 수 없습니다.');
+            return;
+        }
+        try {
+            const response = await submitQuizAnswer(questionId, answer, userId);
+            const newMessage = response.newScore !== null 
+                ? `${response.message} 현재 점수: ${response.newScore}`
+                : response.message;
+            setMessage(newMessage);
+
+            if (response.newScore !== null) {
+                setScore(response.newScore);
+            }
+        } catch (error) {
+            setMessage(error.message);
+        }
     };
 
     return (
         <PageWrapper>
-            <InfoText>
-                폴스널 컬러테스트란?
-            </InfoText>
-            <GradientBoxWrapper>
-                <GradientBox />
-            </GradientBoxWrapper>
-            <TestText>
-                MBTI와 같은 방식으로 나만의 정치색을 만들어 봐요!
-            </TestText>
-            <AdditionalText>
-                0000 기간 동안 000명의 여론조사를 거쳐<br />
-                한국인의 정치성향 분류 모델을 만들었습니다.<br /><br />
-                대표적인 7개의 당 색을 조합한 나만의 정치색,<br />
-                즉 Politics-personal color 를 볼 수 있습니다.<br /><br />
-                '나의 정치색'을 확인해보세요!
-            </AdditionalText>
-            <NextButton onClick={handleStartTest}>다음</NextButton>
+            <Header>오늘의 정치 퀴즈</Header>
+            <Wrapper>
+                {message && (
+                    <Overlay>
+                        <OverlayText>{message}</OverlayText>
+                    </Overlay>
+                )}
+                <OuterFrame blur={blur}>
+                    <Title>QUIZ</Title>
+                    <InfoText>
+                        {question || '질문을 불러오는 중입니다...'}
+                    </InfoText>
+                    <ButtonContainer>
+                        {options.a && (
+                            <Button onClick={() => handleOptionClick('a')}>{options.a}</Button>
+                        )}
+                        {options.b && (
+                            <Button onClick={() => handleOptionClick('b')}>{options.b}</Button>
+                        )}
+                    </ButtonContainer>
+                    <StarContainer>
+                        {[...Array(5)].map((_, index) => (
+                            <Star key={index} filled={index < level}>★</Star>
+                        ))}
+                    </StarContainer>
+                </OuterFrame>
+            </Wrapper>
         </PageWrapper>
     );
 };

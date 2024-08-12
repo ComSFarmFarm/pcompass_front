@@ -4,12 +4,10 @@ import styled from 'styled-components';
 import PageWrapper from '../components/PageWrapper';
 import GradientBox from '../components/GradientBox'; // Import GradientBox
 
-import { fetchNewsTitles } from '../api';
+import { fetchNewsTitles, fetchQuizQuestion } from '../api'; // Add fetchQuizQuestion import
 
 import { ReactComponent as ChevronLeftSVG } from '../img/chevron-left.svg';
 import { ReactComponent as RainbowSVG } from '../img/rainbow.svg';
-import { ReactComponent as YesSVG } from '../img/yes.svg';
-import { ReactComponent as NoSVG } from '../img/no.svg';
 
 import { ReactComponent as PartyIcon1 } from '../img/party/1.svg';
 import { ReactComponent as PartyIcon2 } from '../img/party/2.svg';
@@ -42,17 +40,13 @@ const boxData = [
         hasGradientBox: true, // Add a flag to indicate this box has a gradient box
     },
     {
-        text: (
-            <>
-                유죄가 확정된 범죄자들에게도<br />
-                투표권을 가질 권리가 있을까요?
-            </>
-        ),
+        text: null, // To be updated with quiz question
         additionalText: '>> 매일 푸는 정치 퀴즈 232,432,342명 참여중',
         buttonText: null,
         svg: null,
         width: '500px',
         height: '300px',
+        hasQuiz: true, // Flag to indicate this box will show quiz options
     },
     {
         text: null,
@@ -93,6 +87,7 @@ const boxData = [
 const Main = () => {
     const navigate = useNavigate();
     const [randomNews, setRandomNews] = useState(null);
+    const [quiz, setQuiz] = useState({ question: '', options: {} });
 
     useEffect(() => {
         const fetchAndSetRandomNews = async () => {
@@ -105,7 +100,20 @@ const Main = () => {
             }
         };
 
+        const fetchAndSetQuiz = async () => {
+            try {
+                const quizData = await fetchQuizQuestion();
+                setQuiz({
+                    question: quizData.question,
+                    options: quizData.options,
+                });
+            } catch (error) {
+                console.error('Failed to fetch quiz question', error);
+            }
+        };
+
         fetchAndSetRandomNews();
+        fetchAndSetQuiz();
     }, []);
 
     const handleChevronClick = (path) => {
@@ -128,6 +136,10 @@ const Main = () => {
         window.location.href = url;
     };
 
+    const handleQuizOptionClick = (option) => {
+        alert(`선택한 옵션: ${option}`);
+    };
+
     return (
         <PageWrapper>
             <ContentWrapper>
@@ -141,10 +153,18 @@ const Main = () => {
                             <ChevronLeftSVG width={25} height={25} />
                         </IconContainer>
                         <TextContainer>
-                            <PromoText onClick={() => index === 2 && randomNews ? handleNewsClick(randomNews.url) : null}>
-                                {index === 2 && randomNews ? randomNews.title : data.text}
-                            </PromoText>
-                            {data.additionalText && <AdditionalText>{data.additionalText}</AdditionalText>}
+                            {index === 1 && data.hasQuiz ? (
+                                <>
+                                    <PromoText>
+                                        {quiz.question}
+                                    </PromoText>
+                                    <AdditionalText>{data.additionalText}</AdditionalText>
+                                </>
+                            ) : (
+                                <PromoText onClick={() => index === 2 && randomNews ? handleNewsClick(randomNews.url) : null}>
+                                    {index === 2 && randomNews ? randomNews.title : data.text}
+                                </PromoText>
+                            )}
                         </TextContainer>
                         {index === 2 && randomNews && (
                             <SvgContainer onClick={() => handleNewsClick(randomNews.url)}>
@@ -157,14 +177,16 @@ const Main = () => {
                                 />
                             </SvgContainer>
                         )}
-                        {index === 1 && (
+                        {index === 1 && data.hasQuiz && (
                             <ButtonContainer>
-                                <SvgButton onClick={() => alert('Yes button clicked')}>
-                                    <YesSVG width={170} height={170} />
-                                </SvgButton>
-                                <SvgButton onClick={() => alert('No button clicked')}>
-                                    <NoSVG width={170} height={170} />
-                                </SvgButton>
+                                {Object.entries(quiz.options).map(([key, value]) => (
+                                    <Button
+                                        key={key}
+                                        onClick={() => handleQuizOptionClick(value)}
+                                    >
+                                        {value}
+                                    </Button>
+                                ))}
                             </ButtonContainer>
                         )}
                         {data.buttonText && data.buttonText !== null && (
@@ -203,6 +225,7 @@ const Main = () => {
     );
 };
 
+// Styled Components
 const TextWithSearch = styled.p`
     font-size: 16px;
     font-weight: 500;
@@ -261,7 +284,7 @@ const TextContainer = styled.div`
 
 const SvgContainer = styled.div`
     margin-top: 15px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     border-radius: 20px;
     overflow: hidden;
     width: fit-content;
@@ -276,9 +299,12 @@ const PromoText = styled.p`
     text-align: center;
     margin: 10px 50px;
     line-height: 1.4;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-word;
+    max-width: 100%; /* Ensures the text does not overflow the container */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Limit to 3 lines */
+    -webkit-box-orient: vertical;
     white-space: normal;
     cursor: pointer;
 `;
@@ -288,6 +314,7 @@ const AdditionalText = styled.p`
     font-weight: 500;
     color: green;
     margin: 10px 0;
+    margin-bottom: 40px;
 `;
 
 const ButtonAndSearchContainer = styled.div`
@@ -334,16 +361,25 @@ const TestButton = styled.button`
 const ButtonContainer = styled.div`
     display: flex;
     gap: 20px;
-    margin-top: -20px;
-    margin-bottom: -20px;
+    margin-top: 0; /* Adjusted to move buttons up */
+    margin-bottom: 20px; /* Adjusted to provide space below buttons */
 `;
 
-const SvgButton = styled.div`
+const Button = styled.button`
+    width: 120px;
+    height: 50px;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #6a0dad;
+    color: white;
+    border-radius: 12px;
     cursor: pointer;
-    transition: opacity 0.3s;
-
+    transition: background-color 0.3s, transform 0.3s;
+    
     &:hover {
-        opacity: 0.8;
+        background-color: #5c00b4;
+        transform: scale(1.05);
     }
 `;
 
