@@ -50,7 +50,7 @@ const StyledButton = styled.button`
 `;
 
 const SmallButton = styled.button`
-    background-color: dark-gray;
+    background-color: darkgray; /* 수정된 색상 값 */
     color: black;
     border: none;
     margin-top: 10px;
@@ -76,7 +76,6 @@ const ButtonText = styled.div`
     color: #6e1aab;
     transition: color 0.3s;
 `;
-
 
 const GaugeWrapper = styled.div`
     margin: 50px auto;
@@ -138,11 +137,6 @@ const Quiz = () => {
         setShowLeaderboard(false); // 점수 관리 클릭 시 순위 표도 숨기기
     };
 
-    const handleCustomRecommendations = () => {
-        setShowRecommendation(true);
-        setShowLeaderboard(false); // 순위 보기 클릭 시 추천 항목 표시
-    };
-
     const handleViewLeaderboard = () => {
         setShowLeaderboard(true); // 순위 보기 버튼 클릭 시 순위 표 표시
         setShowRecommendation(false); // 추천 항목 숨기기
@@ -159,7 +153,6 @@ const Quiz = () => {
         return () => clearInterval(interval);
     }, []);
 
-    const angle = (score / 1000) * 180; // 점수를 각도로 변환 (0에서 180도)
     const limitedAngle = (score / current) * ((current / 1000) * 180); // 점수를 각도로 변환 (0에서 36도)
 
     const createClipPath = () => {

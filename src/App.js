@@ -14,25 +14,26 @@ import Result from './pages/Result';
 import ColorTest from './pages/ColorTest';
 import Polquiz from './pages/Polquiz';
 
+
 function App() {
     return (
         <Router>
             <GlobalStyle /> {/* Apply GlobalStyle here */}
-            <Routes>
-                <Route path="/" element={<Main />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/first" element={<First />} />
-                <Route path="/test" element={<Test />} />
-                <Route path="/main" element={<Main />} />    
-                <Route path="/quiz" element={<Quiz />} />  
-                <Route path="/News" element={<News />} />         
-                <Route path="/promises" element={<Promises />} />    
-                <Route path="/search" element={<Search />} />    
-                <Route path="/result" element={<Result />} />  
-                <Route path="/colortest" element={<ColorTest />} /> 
-                <Route path="/polquiz" element={<Polquiz />} /> 
-            </Routes>
+                <Routes>
+                    <Route path="/" element={<Main />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/first" element={<First />} />
+                    <Route path="/test" element={<Test />} />
+                    <Route path="/main" element={<Main />} />
+                    <Route path="/quiz" element={<Quiz />} />
+                    <Route path="/news" element={<News />} /> {/* 경로 수정 */}
+                    <Route path="/promises" element={<Promises />} />
+                    <Route path="/search" element={<Search />} />
+                    <Route path="/result" element={<Result />} />
+                    <Route path="/colortest" element={<ColorTest />} />
+                    <Route path="/polquiz" element={<Polquiz />} />
+                </Routes>
         </Router>
     );
 }

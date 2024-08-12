@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import PageWrapper from '../components/PageWrapper';
 import { fetchQuizQuestion, submitQuizAnswer } from '../api';
@@ -125,14 +124,11 @@ const OverlayText = styled.div`
 const Polquiz = () => {
     const [question, setQuestion] = useState('');
     const [options, setOptions] = useState({});
-    const [selectedOption, setSelectedOption] = useState('');
     const [message, setMessage] = useState('');
-    const [score, setScore] = useState(0);
     const [questionId, setQuestionId] = useState(null);
     const [level, setLevel] = useState(0);
     const [userId] = useState('yjin@goatfarm.ai'); // 정적으로 설정된 userId
     const [blur, setBlur] = useState(false);
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -162,7 +158,6 @@ const Polquiz = () => {
     }, [message]);
 
     const handleOptionClick = async (answer) => {
-        setSelectedOption(answer);
         if (questionId === null) {
             setMessage('질문 ID를 찾을 수 없습니다.');
             return;
@@ -173,10 +168,6 @@ const Polquiz = () => {
                 ? `${response.message} 현재 점수: ${response.newScore}`
                 : response.message;
             setMessage(newMessage);
-
-            if (response.newScore !== null) {
-                setScore(response.newScore);
-            }
         } catch (error) {
             setMessage(error.message);
         }
