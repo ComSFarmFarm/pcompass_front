@@ -1,4 +1,3 @@
-// Leaderboard.js
 import React from 'react';
 import styled from 'styled-components';
 
@@ -11,7 +10,7 @@ const LeaderboardWrapper = styled.div`
     max-width: 600px;
     margin: 0 auto;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    position: center;
+    position: relative;
     margin-top: 100px;
     margin-bottom: -52px;
 `;
@@ -37,15 +36,36 @@ const LeaderboardItem = styled.li`
     border-bottom: 1px solid #444;
     font-size: 24px;
     font-weight: bold;
+    background-color: ${props => props.isCurrentUser ? '#6e1aab' : 'transparent'};
+    color: ${props => props.isCurrentUser ? '#fff' : '#fff'};
+    position: relative;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: ${props => props.isCurrentUser ? '5px' : '0'};
+        height: 100%;
+        background-color: #A956FC;
+        transition: width 0.3s;
+    }
 `;
 
-const Leaderboard = ({ data }) => {
+const Leaderboard = ({ data, currentUser }) => {
     return (
         <LeaderboardWrapper>
             <LeaderboardTitle>순위표</LeaderboardTitle>
             <LeaderboardList>
                 {data.map((user, index) => (
-                    <LeaderboardItem key={index}>
+                    <LeaderboardItem
+                        key={index}
+                        isCurrentUser={user.name === currentUser}
+                    >
                         <span>{index + 1}. {user.name}</span>
                         <span>{user.score}점</span>
                     </LeaderboardItem>

@@ -1,29 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import PageWrapper from '../components/PageWrapper'; // PageWrapper의 올바른 경로
-import Leaderboard from '../components/Leaderboard'; // Leaderboard 컴포넌트 임포트
+import PageWrapper from '../components/PageWrapper';
+import Leaderboard from '../components/Leaderboard';
+import { fetchQuizResult } from '../api'; // fetchQuizResult 함수 임포트
 
 const InfoText = styled.div`
     color: #fff;
     font-size: 50px;
     font-weight: bold;
-    margin-top: 100px; /* 상단 여백 */
+    margin-top: 100px;
 `;
 
 const CommandText = styled.div`
     color: #A956FC;
     font-size: 50px;
     font-weight: bold;
-    margin-top: 100px; /* 상단 여백 */
-    text-align: center; /* 텍스트 중앙 정렬 */
+    margin-top: 100px;
+    text-align: center;
 `;
 
 const ButtonContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px; /* 버튼 사이 간격 */
+    gap: 20px;
     margin-top: 20px;
 `;
 
@@ -32,17 +33,17 @@ const StyledButton = styled.button`
     color: white;
     border: none;
     border-radius: 5px;
-    padding: 25px 0; /* 높이를 위한 패딩 증가 */
-    width: calc(100% - 40px); /* 패딩을 고려한 전체 너비 */
-    max-width: 100%; /* 최대 너비 없음 */
-    font-size: 20px; /* 가시성을 위한 글꼴 크기 증가 */
+    padding: 25px 0;
+    width: calc(100% - 40px);
+    max-width: 100%;
+    font-size: 20px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
-    text-align: center; /* 버튼 내부 텍스트 중앙 정렬 */
-    box-sizing: border-box; /* 패딩이 너비에 포함되도록 설정 */
-    margin: 0px; /* 간격을 위한 여백 추가 */
-    margin-top: 213px; /* 이전 요소와의 간격 조정 */
+    text-align: center;
+    box-sizing: border-box;
+    margin: 0px;
+    margin-top: 213px;
 
     &:hover {
         background-color: #8528d4;
@@ -50,20 +51,20 @@ const StyledButton = styled.button`
 `;
 
 const SmallButton = styled.button`
-    background-color: darkgray; /* 수정된 색상 값 */
+    background-color: darkgray;
     color: black;
     border: none;
     margin-top: 10px;
     margin-right: 10px;
     border-radius: 30px;
-    padding: 10px 20px; /* 높이를 위한 패딩 */
+    padding: 10px 20px;
     width: auto;
-    font-size: 20px; /* 가시성을 위한 글꼴 크기 증가 */
+    font-size: 20px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
-    text-align: center; /* 버튼 내부 텍스트 중앙 정렬 */
-    box-sizing: border-box; /* 패딩이 너비에 포함되도록 설정 */
+    text-align: center;
+    box-sizing: border-box;
     &:hover {
         background-color: #8528d4;
         color: white;
@@ -71,7 +72,7 @@ const SmallButton = styled.button`
 `;
 
 const ButtonText = styled.div`
-    font-size: 18px; /* 버튼 높이에 맞춘 글꼴 크기 증가 */
+    font-size: 18px;
     margin-top: 10px;
     color: #6e1aab;
     transition: color 0.3s;
@@ -124,8 +125,11 @@ const ScoreText = styled.div`
 
 const Quiz = () => {
     const [showRecommendation, setShowRecommendation] = useState(false);
-    const [showLeaderboard, setShowLeaderboard] = useState(false); // 추가된 상태
-    const [score, setScore] = useState(0); // 초기 점수를 0으로 설정
+    const [showLeaderboard, setShowLeaderboard] = useState(false);
+    const [score, setScore] = useState(0);
+    const [current, setCurrent] = useState(335); // 초기 current 값은 335로 설정
+    const [leaderboardData, setLeaderboardData] = useState([]);
+    const [currentUser, setCurrentUser] = useState('');
     const navigate = useNavigate();
 
     const handleStartTest = () => {
@@ -134,34 +138,53 @@ const Quiz = () => {
 
     const handleScoreManagement = () => {
         setShowRecommendation(false);
-        setShowLeaderboard(false); // 점수 관리 클릭 시 순위 표도 숨기기
+        setShowLeaderboard(false);
     };
 
     const handleViewLeaderboard = () => {
-        setShowLeaderboard(true); // 순위 보기 버튼 클릭 시 순위 표 표시
-        setShowRecommendation(false); // 추천 항목 숨기기
+        setShowLeaderboard(true);
+        setShowRecommendation(false);
     };
 
-    const current = 335;
+    useEffect(() => {
+        // 퀴즈 결과를 가져와 current 값을 업데이트
+        const fetchData = async () => {
+            try {
+                const result = await fetchQuizResult();
+                const myScore = result?.my_rank?.[0]?.quiz_score || 335; // 내 점수를 가져오거나 기본값 335로 설정
+                const topPlayers = result.top4.map(player => ({
+                    name: player.username,
+                    score: parseInt(player.quiz_score, 10),
+                }));
+                setLeaderboardData(topPlayers);
+                setCurrentUser(result.my_rank[0].username);
+                setCurrent(myScore);
+            } catch (error) {
+                console.error("퀴즈 결과를 가져오는 중 오류 발생:", error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     useEffect(() => {
         // 점수 증가 시뮬레이션
         const interval = setInterval(() => {
-            setScore(prev => (prev < current ? prev + 10 : current)); // 200점까지 증가
+            setScore(prev => (prev < current ? prev + 10 : current)); // current 값까지 증가
         }, 70);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [current]);
 
-    const limitedAngle = (score / current) * ((current / 1000) * 180); // 점수를 각도로 변환 (0에서 36도)
+    const limitedAngle = (score / 1000) * 180; // 점수를 각도로 변환 (0에서 180도)
 
     const createClipPath = () => {
         const radius = 150;
         const centerX = 150;
         const centerY = 150;
-        const startAngle = -90; // 시작 각도 (0도)
+        const startAngle = -90; // 시작 각도
         const endAngle = limitedAngle - 90; // 바늘의 각도에 따른 끝 각도
-        const largeArcFlag = endAngle - startAngle > 180 ? 1 : 0; // 180도 이상의 큰 호 여부
+        const largeArcFlag = endAngle - startAngle > 180 ? 1 : 0;
         const startX = centerX + radius * Math.cos((startAngle - 90) * (Math.PI / 180));
         const startY = centerY + radius * Math.sin((startAngle - 90) * (Math.PI / 180));
         const endX = centerX + radius * Math.cos((endAngle - 90) * (Math.PI / 180));
@@ -169,15 +192,6 @@ const Quiz = () => {
 
         return `M${centerX},${centerY} L${startX},${startY} A${radius},${radius} 0 ${largeArcFlag},1 ${endX},${endY} Z`;
     };
-
-    // 더미 데이터 (실제 데이터는 API 등에서 받아올 수 있습니다.)
-    const leaderboardData = [
-        { name: '홍길동', score: 950 },
-        { name: '이순신', score: 870 },
-        { name: '김유신', score: 800 },
-        { name: '강감찬', score: 730 },
-        // 더 많은 데이터 추가 가능
-    ];
 
     return (
         <PageWrapper>
@@ -219,12 +233,12 @@ const Quiz = () => {
                 </>
             )}
             {showLeaderboard && (
-                <Leaderboard data={leaderboardData} />
+                <Leaderboard data={leaderboardData} currentUser={currentUser} />
             )}
             <StyledButton onClick={handleStartTest}>
                 퀴즈 풀기
                 <ButtonText>
-                    난이도 : 상
+                    난이도 상
                 </ButtonText>
             </StyledButton>
         </PageWrapper>

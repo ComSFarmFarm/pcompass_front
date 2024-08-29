@@ -121,3 +121,15 @@ export const fetchKeywords = async (name, region) => {
         throw error;
     }
 };
+
+
+// 퀴즈 결과 가져오기 함수
+export const fetchQuizResult = async () => {
+    try {
+        const response = await apiInstance.get('/quiz/result');
+        return response.data; // 서버에서 가져온 데이터 반환
+    } catch (error) {
+        console.error("퀴즈 결과를 가져오는 중 오류 발생:", error);
+        throw error;
+    }
+};
