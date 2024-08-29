@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import PageWrapper from '../components/PageWrapper';
 import WordCloud from 'react-wordcloud';
+import { fetchCandidates, fetchPromiseSummary, fetchKeywords } from '../api';
 
 // Import party SVG icons
 import { ReactComponent as PartyIcon1 } from '../img/party/1.svg';
@@ -13,30 +14,47 @@ import { ReactComponent as PartyIcon5 } from '../img/party/5.svg';
 import { ReactComponent as PartyIcon6 } from '../img/party/6.svg';
 import { ReactComponent as PartyIcon7 } from '../img/party/7.svg';
 
-// Sample data for the word cloud
-const words = [
-    { text: '정치', value: 1000 },
-    { text: '경제', value: 900 },
-    { text: '사회', value: 800 },
-    { text: '외교', value: 700 },
-    { text: '법률', value: 600 },
-    { text: '복지', value: 500 },
-    { text: '미디어', value: 400 },
-    { text: '교육', value: 300 },
-    { text: '문화', value: 200 },
-    { text: '건강', value: 100 },
-];
-
-// Sample candidate names
-const candidateNames = [
-    '김철수', '이영희', '박지민', '정수빈', '최민수', '강현아', '이승기', '윤아', 
-    '오정희', '김하늘', '이상호', '박서준', '최지우', '정우성', '김태희', '한가인',
-];
-
 const Promises = () => {
     const { search } = useLocation();
     const params = new URLSearchParams(search);
     const selectedIcon = params.get('partyIcon');
+
+    const [candidates, setCandidates] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [summary, setSummary] = useState('');
+    const [loadingSummary, setLoadingSummary] = useState(false);
+    const [wordCloudData, setWordCloudData] = useState([]);
+    const [selectedCandidate, setSelectedCandidate] = useState(null);
+
+    useEffect(() => {
+        const loadCandidates = async () => {
+            try {
+                const data = await fetchCandidates();
+                setCandidates(data);
+            } catch (error) {
+                console.error('후보자 목록을 불러오는 중 오류 발생:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadCandidates();
+    }, []);
+
+    const handleCandidateClick = async (name, region) => {
+        setSelectedCandidate({ name, region });
+        setLoadingSummary(true);
+        try {
+            const summary = await fetchPromiseSummary(name, region);
+            setSummary(summary);
+
+            const keywords = await fetchKeywords(name, region);
+            setWordCloudData(keywords);
+        } catch (error) {
+            console.error("공약 요약 또는 키워드 데이터를 가져오는 중 오류 발생:", error);
+        } finally {
+            setLoadingSummary(false);
+        }
+    };
 
     const renderPartyIcon = () => {
         switch (selectedIcon) {
@@ -59,6 +77,51 @@ const Promises = () => {
         }
     };
 
+    const partyToIconMap = {
+        '개혁신당': '1',
+        '국민의힘': '2',
+        '더불어민주당': '3',
+        '사회민주당': '4',
+        '새로운미래': '5',
+        '진보당': '6',
+        '기타': '7',
+    };
+
+    const filteredCandidates = candidates.filter(candidate => {
+        return partyToIconMap[candidate.party] === selectedIcon;
+    });
+
+    const wordCloudOptions = {
+        colors: ['#333'],
+        fontFamily: 'Roboto, sans-serif',
+        fontSizes: [30, 70],  // Increase font size range
+        rotationAngles: [-90, 0, 45, 90],
+        scale: 'linear',
+        padding: 4,
+        spiral: 'archimedean',
+        transitionDuration: 1000,
+    };
+
+    const getColor = (value) => {
+        const opacity = Math.min(1, value / 100);
+        return `rgba(0, 0, 0, ${opacity})`;
+    };
+
+    const getFontSize = (value) => {
+        return Math.min(70, 30 + value / 4);  // Increase font size
+    };
+
+    const getFontWeight = (value) => {
+        return Math.min(900, 300 + value / 10);
+    };
+
+    const transformedWordCloudData = wordCloudData.map(word => ({
+        ...word,
+        color: getColor(word.value),
+        fontSize: getFontSize(word.value),
+        fontWeight: getFontWeight(word.value),
+    }));
+
     return (
         <PageWrapper>
             <InfoText>궁금한 후보자를 클릭해보세요.</InfoText>
@@ -68,38 +131,84 @@ const Promises = () => {
                 </IconOverlay>
             )}
             <ContentWrapper>
-                <CandidateTable>
-                    {candidateNames.map((name, index) => (
-                        <CandidateButton key={index}>
-                            {name}
-                        </CandidateButton>
-                    ))}
-                </CandidateTable>
-                <WordCloudWrapper>
-                    <WordCloud words={words} />
-                </WordCloudWrapper>
+                {loading ? (
+                    <p>Loading...</p>
+                ) : (
+                    <>
+                        {filteredCandidates.length === 0 ? (
+                            <p>후보자가 없습니다.</p>
+                        ) : (
+                            <CandidateTable>
+                                {filteredCandidates.map((candidate, index) => (
+                                    <CandidateButton
+                                        key={index}
+                                        onClick={() => handleCandidateClick(candidate.name, candidate.region)}
+                                    >
+                                        {candidate.name}
+                                    </CandidateButton>
+                                ))}
+                            </CandidateTable>
+                        )}
+                        {loadingSummary && (
+                            <LoadingWrapper>
+                                <Loader />
+                                <LoadingText>공약 요약 생성 중...</LoadingText>
+                            </LoadingWrapper>
+                        )}
+                        {selectedCandidate && !loadingSummary && (
+                            <>
+                                {summary && (
+                                    <SummaryWrapper>
+                                        <h3>공약 요약:</h3>
+                                        <p>{summary}</p>
+                                    </SummaryWrapper>
+                                )}
+                                <WordCloudWrapper>
+                                    <WordCloud
+                                        words={transformedWordCloudData}
+                                        options={wordCloudOptions}
+                                    />
+                                </WordCloudWrapper>
+                            </>
+                        )}
+                    </>
+                )}
             </ContentWrapper>
         </PageWrapper>
     );
 };
 
+// Styled Components
 const InfoText = styled.div`
     color: #fff;
     font-size: 40px;
     font-weight: bold;
     margin-top: 100px;
     margin-bottom: 100px;
+    text-align: center;
 `;
 
 const ContentWrapper = styled.div`
     position: relative;
-    margin-top: 160px; /* Adjust to move content further down */
+    margin-top: 160px;
 `;
 
 const WordCloudWrapper = styled.div`
     width: 100%;
+    max-width: 1000px;
     height: 500px;
     position: relative;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);  // Adjust shadow for subtle effect
+    padding: 20px;
+    margin-top: 40px;
+    margin-bottom: 400px;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 `;
 
 const IconOverlay = styled.div`
@@ -110,22 +219,21 @@ const IconOverlay = styled.div`
     height: 100%;
     display: flex;
     justify-content: center;
-    pointer-events: none; /* Allows clicks to pass through to the word cloud */
+    pointer-events: none;
     margin-top: 280px;
-    z-index: 1; /* Lower z-index to ensure it's behind the candidate table */
+    z-index: 1;
 `;
 
-// New styled components for candidate table
 const CandidateTable = styled.div`
     display: grid;
-    grid-template-columns: repeat(8, 1fr); /* 8 columns */
-    grid-template-rows: repeat(2, auto); /* 2 rows */
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(auto-fill, minmax(60px, auto));
     gap: 15px;
-    width: 100%; /* Adjust width to fit content */
-    max-width: 900px; /* Ensure the table doesn't exceed this width */
-    margin: 0 auto; /* Center align horizontally */
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
     position: relative;
-    z-index: 2; /* Higher z-index to ensure it's above the icon overlay */
+    z-index: 2;
 `;
 
 const CandidateButton = styled.button`
@@ -135,6 +243,7 @@ const CandidateButton = styled.button`
     padding: 15px;
     border-radius: 8px;
     font-size: 18px;
+    font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s, box-shadow 0.3s;
 
@@ -142,6 +251,69 @@ const CandidateButton = styled.button`
         background-color: #555;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
     }
+`;
+
+const SummaryWrapper = styled.div`
+    margin-top: 40px;
+    padding: 30px;
+    background-color: #f4f4f4;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    color: #333;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    transition: transform 0.3s ease-in-out;
+
+    &:hover {
+        transform: scale(1.02);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    h3 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #111;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #333;
+        padding-bottom: 8px;
+        text-transform: uppercase;
+    }
+
+    p {
+        font-size: 18px;
+        line-height: 1.8;
+        margin: 0;
+        word-break: break-word;
+    }
+`;
+
+const LoadingWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 100px;
+`;
+
+const Loader = styled.div`
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #3498db;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+`;
+
+const LoadingText = styled.p`
+    margin-top: 15px;
+    font-size: 18px;
+    color: #333;
 `;
 
 export default Promises;

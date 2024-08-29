@@ -13,9 +13,9 @@ const InfoText = styled.div`
 
 const TestText = styled.div`
     color: #8459FF;
-    font-size: 24px;
+    font-size: 26px;
     font-weight: bold;
-    margin-top: 50px;
+    margin-top: 80px;
 `;
 
 const AdditionalText = styled.div`
@@ -24,6 +24,7 @@ const AdditionalText = styled.div`
     margin-top: 40px;
     line-height: 1.5;
     margin-bottom: 50px;
+    margin-top: 60px;
 `;
 
 const NextButton = styled.button`
@@ -64,9 +65,9 @@ const Test = () => {
                 MBTI와 같은 방식으로 나만의 정치색을 만들어 봐요!
             </TestText>
             <AdditionalText>
-                0000 기간 동안 000명의 여론조사를 거쳐<br />
-                한국인의 정치성향 분류 모델을 만들었습니다.<br /><br />
-                대표적인 7개의 당 색을 조합한 나만의 정치색,<br />
+                정치적 이념의 대표적인 특징을 담고있는 질문들로<br />
+                당신의 정치 성향을 알아보세요<br /><br />
+                진보와 보수 성향 %에 따라 색을 조합한 나만의 정치색,<br />
                 즉 Politics-personal color 를 볼 수 있습니다.<br /><br />
                 '나의 정치색'을 확인해보세요!
             </AdditionalText>

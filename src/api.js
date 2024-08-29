@@ -82,3 +82,42 @@ export const submitQuizAnswer = async (questionId, answer, userId) => {
         }
     }
 };
+
+// 후보자 목록 가져오기 함수
+export const fetchCandidates = async () => {
+    try {
+        const response = await apiInstance.get('/promise/candidates');
+        return response.data.candidates; // 서버에서 가져온 데이터
+    } catch (error) {
+        console.error("후보자 목록을 가져오는 중 오류 발생:", error);
+        throw error;
+    }
+};
+
+// 공약 요약 가져오기 함수
+export const fetchPromiseSummary = async (name, region) => {
+    try {
+        const response = await apiInstance.post('/promise/summary', {
+            name,
+            region
+        });
+        return response.data.summary;
+    } catch (error) {
+        console.error("공약 요약을 가져오는 중 오류 발생:", error);
+        throw error;
+    }
+};
+
+// 키워드 분석 결과 가져오기 함수
+export const fetchKeywords = async (name, region) => {
+    try {
+        const response = await apiInstance.post('/promise/keywords', {
+            name,
+            region
+        });
+        return response.data.words;
+    } catch (error) {
+        console.error("키워드 분석 결과를 가져오는 중 오류 발생:", error);
+        throw error;
+    }
+};

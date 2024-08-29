@@ -35,16 +35,15 @@ const QuestionTitle = styled.h2`
 
 const OptionContainer = styled.div`
   display: flex;
-  justify-content: space-between; /* 동의와 비동의를 양쪽으로 배치 */
+  justify-content: center; /* 컨테이너를 중앙에 배치 */
   align-items: center;
-  width: 100%;
+  gap: 43px; /* 동그라미들 사이의 간격을 20px로 설정 */
   margin-top: 50px;
   margin-bottom: 20px;
 `;
 
 const Option = styled.div`
   display: inline-block;
-  margin: 0 10px;
   position: relative;
 `;
 
@@ -91,13 +90,14 @@ const CheckMark = styled(FaCheck)`
 
 const ButtonContainer = styled.div`
   display: flex;
-  justify-content: flex-end; /* 버튼들을 오른쪽으로 정렬합니다 */
-  margin-left: 370px;
+  justify-content: center; /* 버튼들을 오른쪽으로 정렬합니다 */
   margin-top: 200px;
   margin-bottom: 180px;
   width: 100%;
   max-width: 1000px;
-  gap: 800px; /* 버튼들 사이의 간격을 조절합니다 */
+  gap: 700px; /* 버튼들 사이의 간격을 조절합니다 */
+  margin-left: 380px;
+ 
 `;
 
 const Button = styled.button`
