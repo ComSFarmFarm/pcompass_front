@@ -61,13 +61,17 @@ const StyledButton = styled.button`
     transition: background-color 0.3s;
     text-align: center;
     box-sizing: border-box;
-    margin: 0;
-    margin-top: 213px;
-
+    position: fixed;
+    bottom: 0; /* 화면 하단에 고정 */
+    left: 50%;
+    transform: translateX(-50%); /* 화면 중앙에 정렬 */
+    margin: 0; /* margin-top 제거 */
+    
     &:hover {
         background-color: #8528d4;
     }
 `;
+
 
 const SmallButton = styled.button`
     background-color: darkgray;
@@ -155,6 +159,7 @@ const ResultContainer = styled.div`
     flex-direction: column;
     align-items: center;
     margin-top: 100px;
+    margin-bottom: 200px;
     padding: 30px;
     background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
     border-radius: 20px;

@@ -63,7 +63,8 @@ export const submitQuizAnswer = async (questionId, answer) => {
     try {
         const response = await apiInstance.post('/quiz/answer', {
             questionId,
-            answer
+            answer,
+
         });
         return response.data;
     } catch (error) {
