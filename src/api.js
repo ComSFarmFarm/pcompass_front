@@ -59,12 +59,11 @@ export const fetchQuizQuestion = async () => {
 };
 
 // 퀴즈 정답 제출 함수
-export const submitQuizAnswer = async (questionId, answer, userId) => {
+export const submitQuizAnswer = async (questionId, answer) => {
     try {
         const response = await apiInstance.post('/quiz/answer', {
             questionId,
-            answer,
-            userId: userId // userId는 매개변수로 받기
+            answer
         });
         return response.data;
     } catch (error) {
@@ -130,6 +129,17 @@ export const fetchQuizResult = async () => {
         return response.data; // 서버에서 가져온 데이터 반환
     } catch (error) {
         console.error("퀴즈 결과를 가져오는 중 오류 발생:", error);
+        throw error;
+    }
+};
+
+// fetchColorResult 함수 정의
+export const fetchColorResult = async (colorId) => {
+    try {
+        const response = await axios.get(`/api/colors/${colorId}`);
+        return response.data.average; // 서버에서 받은 데이터를 가공해서 반환
+    } catch (error) {
+        console.error("색상 결과를 가져오는 중 오류 발생:", error);
         throw error;
     }
 };

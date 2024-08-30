@@ -129,7 +129,6 @@ const Polquiz = () => {
     const [message, setMessage] = useState('');
     const [questionId, setQuestionId] = useState(null);
     const [level, setLevel] = useState(0);
-    const [userId] = useState('yjin@goatfarm.ai'); // 정적으로 설정된 userId
     const [blur, setBlur] = useState(false);
 
     useEffect(() => {
@@ -165,7 +164,7 @@ const Polquiz = () => {
             return;
         }
         try {
-            const response = await submitQuizAnswer(questionId, answer, userId);
+            const response = await submitQuizAnswer(questionId, answer);
             const newMessage = response.newScore !== null 
                 ? `${response.message}\n현재 점수: ${response.newScore}`
                 : response.message;

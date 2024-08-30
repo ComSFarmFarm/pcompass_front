@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import PageWrapper from '../components/PageWrapper';
 import Leaderboard from '../components/Leaderboard';
-import { fetchQuizResult } from '../api'; // fetchQuizResult 함수 임포트
+import { fetchQuizResult, fetchColorResult } from '../api';
 
 const InfoText = styled.div`
     color: #fff;
@@ -18,6 +18,25 @@ const CommandText = styled.div`
     font-weight: bold;
     margin-top: 100px;
     text-align: center;
+`;
+
+const PercentBox = styled.div`
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 100%; /* 컨테이너의 너비를 80%로 설정 */
+    max-width: 1200px; /* 최대 너비를 1200px로 설정 (옵션) */
+`;
+
+const PercentText = styled.div`
+    color: black;
+    font-size: 25px;
+    font-weight: bold;
+    margin: 0;
 `;
 
 const ButtonContainer = styled.div`
@@ -42,7 +61,7 @@ const StyledButton = styled.button`
     transition: background-color 0.3s;
     text-align: center;
     box-sizing: border-box;
-    margin: 0px;
+    margin: 0;
     margin-top: 213px;
 
     &:hover {
@@ -64,7 +83,7 @@ const SmallButton = styled.button`
     cursor: pointer;
     transition: background-color 0.3s;
     text-align: center;
-    box-sizing: border-box;
+    
     &:hover {
         background-color: #8528d4;
         color: white;
@@ -116,11 +135,48 @@ const Needle = styled.div`
 `;
 
 const ScoreText = styled.div`
+    color: black;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+`;
+
+const ScoreText2= styled.div`
     color: #fff;
     font-size: 24px;
     font-weight: bold;
     text-align: center;
     margin-top: 10px;
+`;
+
+const ResultContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 100px;
+    padding: 30px;
+    background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+    border-radius: 20px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    color: #333;
+    border: 1px solid #ccc;
+    width: 80%; /* 컨테이너의 너비를 80%로 설정 */
+    max-width: 1200px; /* 최대 너비를 1200px로 설정 (옵션) */
+`;
+
+const ResultText = styled.div`
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 15px;
+`;
+
+const GaugeSection = styled.div`
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
 `;
 
 const Quiz = () => {
@@ -130,6 +186,9 @@ const Quiz = () => {
     const [current, setCurrent] = useState(335); // 초기 current 값은 335로 설정
     const [leaderboardData, setLeaderboardData] = useState([]);
     const [currentUser, setCurrentUser] = useState('');
+    const [colorScore, setColorScore] = useState(0); // colorScore를 위한 상태 추가
+    const [colorCurrent, setColorCurrent] = useState(335); // colorCurrent 값을 위한 상태 추가
+    const [percent, setPercent] = useState(0); // 상위 퍼센트를 위한 상태 추가
     const navigate = useNavigate();
 
     const handleStartTest = () => {
@@ -168,7 +227,7 @@ const Quiz = () => {
     }, []);
 
     useEffect(() => {
-        // 점수 증가 시뮬레이션
+        // 점수 증가 시뮬레이션 (퀴즈 결과)
         const interval = setInterval(() => {
             setScore(prev => (prev < current ? prev + 10 : current)); // current 값까지 증가
         }, 70);
@@ -176,7 +235,39 @@ const Quiz = () => {
         return () => clearInterval(interval);
     }, [current]);
 
+    useEffect(() => {
+        // 색상 결과를 가져와 colorCurrent 값을 업데이트
+        const fetchColorData = async () => {
+            try {
+                const colorAverage = await fetchColorResult(); // fetchColorResult 호출
+                setColorCurrent(colorAverage || 335); // colorCurrent 업데이트 (기본값 335)
+            } catch (error) {
+                console.error("색상 결과를 가져오는 중 오류 발생:", error);
+            }
+        };
+
+        fetchColorData();
+    }, []);
+
+    useEffect(() => {
+        // 점수 증가 시뮬레이션 (색상 결과)
+        const interval = setInterval(() => {
+            setColorScore(prev => (prev < colorCurrent ? prev + 10 : colorCurrent)); // colorCurrent 값까지 증가
+        }, 70);
+
+        return () => clearInterval(interval);
+    }, [colorCurrent]);
+
+    useEffect(() => {
+        // 내 점수가 내 나이대 평균 점수보다 상위 몇 퍼센트인지 계산
+        if (colorCurrent > 0) {
+            const calculatedPercent = ((current - colorCurrent) / colorCurrent);
+            setPercent(calculatedPercent.toFixed(2)); // 소수점 둘째 자리까지 표시
+        }
+    }, [current, colorCurrent]);
+
     const limitedAngle = (score / 1000) * 180; // 점수를 각도로 변환 (0에서 180도)
+    const colorLimitedAngle = (colorScore / 1000) * 180; // colorScore 점수를 각도로 변환
 
     const createClipPath = () => {
         const radius = 150;
@@ -184,6 +275,21 @@ const Quiz = () => {
         const centerY = 150;
         const startAngle = -90; // 시작 각도
         const endAngle = limitedAngle - 90; // 바늘의 각도에 따른 끝 각도
+        const largeArcFlag = endAngle - startAngle > 180 ? 1 : 0;
+        const startX = centerX + radius * Math.cos((startAngle - 90) * (Math.PI / 180));
+        const startY = centerY + radius * Math.sin((startAngle - 90) * (Math.PI / 180));
+        const endX = centerX + radius * Math.cos((endAngle - 90) * (Math.PI / 180));
+        const endY = centerY + radius * Math.sin((endAngle - 90) * (Math.PI / 180));
+
+        return `M${centerX},${centerY} L${startX},${startY} A${radius},${radius} 0 ${largeArcFlag},1 ${endX},${endY} Z`;
+    };
+
+    const createColorClipPath = () => {
+        const radius = 150;
+        const centerX = 150;
+        const centerY = 150;
+        const startAngle = -90; // 시작 각도
+        const endAngle = colorLimitedAngle - 90; // 바늘의 각도에 따른 끝 각도
         const largeArcFlag = endAngle - startAngle > 180 ? 1 : 0;
         const startX = centerX + radius * Math.cos((startAngle - 90) * (Math.PI / 180));
         const startY = centerY + radius * Math.sin((startAngle - 90) * (Math.PI / 180));
@@ -228,8 +334,39 @@ const Quiz = () => {
                             </GaugeFill>
                             <Needle angle={limitedAngle - 90} />
                         </GaugeBackground>
-                        <ScoreText>{score} / 1000</ScoreText>
+                        <ScoreText2>{score} / 1000</ScoreText2>
                     </GaugeWrapper>
+
+                    {/* 새로운 디자인 컨테이너 추가 */}
+                    <ResultContainer>
+                        <ResultText>내 나이대 평균 점수: {colorCurrent}점</ResultText>
+                        <GaugeSection>
+                            <GaugeWrapper>
+                                <GaugeBackground>
+                                    <GaugeFill viewBox="0 0 300 150">
+                                        <defs>
+                                            <clipPath id="clipColor">
+                                                <path d={createColorClipPath()} />
+                                            </clipPath>
+                                            <linearGradient id="gradientColor">
+                                                <stop offset="0%" stopColor="#0000ff" />
+                                                <stop offset="50%" stopColor="#87cefa" />
+                                                <stop offset="100%" stopColor="#add8e6" />
+                                            </linearGradient>
+                                        </defs>
+                                        <rect x="0" y="0" width="300" height="150" fill="url(#gradientColor)" clipPath="url(#clipColor)" />
+                                    </GaugeFill>
+                                    <Needle angle={colorLimitedAngle - 90} />
+                                </GaugeBackground>
+                                <ScoreText>{colorScore} / 1000</ScoreText>
+                            </GaugeWrapper>
+                        </GaugeSection>
+                        <PercentBox>
+                            <PercentText>
+                                당신은 나이대 평균에 비해 상위 {percent}%에 속합니다.
+                            </PercentText>
+                        </PercentBox>
+                    </ResultContainer>
                 </>
             )}
             {showLeaderboard && (
