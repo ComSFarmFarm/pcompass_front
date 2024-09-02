@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { ReactComponent as ChevronLeftIcon } from '../img/chevron-left.svg'; // SVG 파일 import
 import { ReactComponent as SearchIcon } from '../img/search.svg'; // 새로운 SVG 파일 import
 import { ReactComponent as ListIcon } from '../img/list.svg';
@@ -115,8 +116,8 @@ const ComboBox = styled.select`
 `;
 
 const MessageList = styled.div`
-    flex: 1;
-    overflow-y: auto;
+    flex: 1; /* 남은 공간을 모두 차지하도록 설정 */
+    overflow-y: auto; /* 수직 스크롤 가능하도록 설정 */
     padding: 10px;
 `;
 
@@ -131,6 +132,7 @@ const MessageContent = styled.div`
     display: flex;
     flex-direction: column; /* Sender와 Text가 위아래로 배치되도록 설정 */
     align-items: flex-start; /* 상단에 정렬되도록 설정 */
+    margin-bottom: 20px;
 `;
 
 const TextBox = styled.div`
@@ -181,7 +183,7 @@ const ReceiverMessage = styled.div`
 
 const ReceiverTextBox = styled.div`
     display: flex;
-    margin-top: 80px;
+    margin-top: 20px;
     flex-direction: column;
     background-color: yellow; /* 노란색 배경 */
     border-radius: 10px;
@@ -239,10 +241,41 @@ const SendButton = styled.button`
     cursor: pointer;
 `;
 
+const BoxContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+`;
+
+const Box = styled.div`
+    background-color: #d3d3d3; /* 상자 배경색 */
+    border-radius: 5px;
+    padding: 10px;
+    width: 48%; /* 상자의 너비 설정 */
+    text-align: center; /* 텍스트 가운데 정렬 */
+`;
+
+const DownloadLink = styled.p`
+    color: blue; /* 텍스트 색상 파란색 */
+    text-decoration: underline; /* 밑줄 추가 */
+`;
+
+const LeftBox = styled(Box)`
+    /* 왼쪽 상자 스타일 추가 (필요시) */
+`;
+
+const RightBox = styled(Box)`
+    /* 오른쪽 상자 스타일 추가 (필요시) */
+`;
+
 const ChatMessage = () => {
     const [inputValue, setInputValue] = useState('');
     const [selectedOption, setSelectedOption] = useState('전체');
+    const navigate = useNavigate(); // useNavigate 훅을 사용
 
+    const handleLogoClick = () => {
+        navigate('/kakaochat'); // '/chat' 경로로 이동
+    };
     const handleSend = () => {
         if (inputValue.trim()) {
             // Handle sending message
@@ -255,7 +288,7 @@ const ChatMessage = () => {
             <ChatContainer>
                 <Header>
                     <HeaderButton>
-                        <ChevronIcon />
+                        <ChevronIcon onClick={handleLogoClick}/>
                     </HeaderButton>
                     <HeaderTitle>광화문석갈비</HeaderTitle>
                     <HeaderPhone>02-539-0107</HeaderPhone>
@@ -271,8 +304,8 @@ const ChatMessage = () => {
             
                 <MessageList>
                     <Message>
-                        <MessageContent>
-                            <Sender>
+                    <MessageContent>
+                    <Sender>
                                 <SenderImage src={senderImage} alt="Galbi" />
                                 <SenderText>광화문석갈비</SenderText>
                             </Sender>
@@ -283,9 +316,7 @@ const ChatMessage = () => {
                                 <p>수신거부: 홈&gt;채널 차단</p>
                                 <TimeStamp>12:11</TimeStamp>
                             </TextBox>
-                        </MessageContent>
-                    </Message>
-                    <Message>
+                            </MessageContent>
                         <MessageContent>
                             <Sender>
                                 <SenderImage src={senderImage} alt="Galbi" />
@@ -293,9 +324,17 @@ const ChatMessage = () => {
                             </Sender>
                             <TextBox>
                                 <ImageAboveText src={galbiImage} alt="Galbi" />
-                                <p>좋은 고기를 태우지 않고 먹을 수 없을까?</p>
-                                <p>고기를 먹을 때 웃에 냄새가 안 뻘 수 없을까?</p>
+                                <p>좋은 고기를 <br /> 태우지 않고 먹을 수 없을까?</p>
+                                <br />
+                                <p>고기를 먹을 때 <br /> 웃에 냄새가 안 뻘 수 없을까?</p>
+                                <br />
                                 <p>이렇게 시작된 광석씨네 이야기</p>
+                                <br />
+                                <DownloadLink>매거진 다운로드 링크</DownloadLink> {/* 링크 텍스트에 스타일 적용 */}
+                                <BoxContainer>
+                                    <LeftBox>코엑스 점</LeftBox>
+                                    <RightBox>D타워점</RightBox>
+                                </BoxContainer>
                                 <TimeStamp>12:13</TimeStamp>
                             </TextBox>
                         </MessageContent>
