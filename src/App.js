@@ -13,6 +13,9 @@ import Search from './pages/Search';
 import Result from './pages/Result';
 import ColorTest from './pages/ColorTest';
 import Polquiz from './pages/Polquiz';
+import Kakao from './pages/Kakao';
+import KakaoChat from './pages/KakaoChat';
+import Chat from './pages/Chat';
 
 
 function App() {
@@ -33,6 +36,9 @@ function App() {
                     <Route path="/result" element={<Result />} />
                     <Route path="/colortest" element={<ColorTest />} />
                     <Route path="/polquiz" element={<Polquiz />} />
+                    <Route path="/kakao" element={<Kakao />} />
+                    <Route path="/kakaochat" element={<KakaoChat />} />
+                    <Route path="/chat" element={<Chat />} />
                 </Routes>
         </Router>
     );

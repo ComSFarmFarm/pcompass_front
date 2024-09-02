@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api';
 import FirstWrapper from '../components/FirstWrapper';
+import kakaoIcon from '../img/kakao.svg';  // 카카오 이미지 import
 
 // Styled components
 
@@ -110,6 +111,34 @@ const SignupText = styled.div`
     }
 `;
 
+// 카카오 로그인 버튼 스타일
+const KakaoLoginButton = styled.button`
+    width: 400px;
+    height: 60px;
+    border: none;
+    font-weight: 700;
+    font-size: 15px;
+    background-color: #fee500;
+    border-radius: 24px;
+    color: #000000;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin: 10px auto 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &:hover {
+        background-color: #e5c800;
+    }
+`;
+
+const KakaoIcon = styled.img`
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+`;
+
 // React component
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -198,6 +227,11 @@ export default function Login() {
             <BottomButton onClick={onClickConfirmButton} disabled={notAllow}>
                 확인
             </BottomButton>
+
+            <KakaoLoginButton onClick={() => navigate('/kakao')}>
+                <KakaoIcon src={kakaoIcon} alt="Kakao" />
+                카카오 로그인
+            </KakaoLoginButton>
 
             <SignupText onClick={() => navigate('/signup')}>
                 회원가입
